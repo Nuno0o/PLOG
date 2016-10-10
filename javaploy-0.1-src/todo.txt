@@ -1,0 +1,9 @@
+// TODO: game complete state
+// TODO: bring in current web site
+// TODO: make resources dir
+// TODO: Add rule On the same turn, a Shield (unlike other pieces) is allowed to make a direction move following  its motion move. 
+// TODO: stand-alone application version
+// TODO: jabber network communication
+// TODO: unit tests
+// TODO: refactor into a common game interface versus javaploy specific interfaces
+// TODO: property files

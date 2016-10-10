@@ -1,0 +1,36 @@
+Installation Process:
+---------------------
+
+-Overview:
+
+Briefly, the installation process involves:
+a) Installing "ant" from <http://ant.apache.org> 
+b) Updating the classpath in "build.xml"
+c) typing "ant jar" at the command line to compile the jar file.
+
+
+-In more words, the installation process:
+
+After you unpack the sources, use "ant" <http://ant.apache.org/> to 
+compile the source into java bytecode. You have to specify the classpath
+before you can use "ant".
+
+
+Compilers:
+---------
+
+I have compiled and tested the source with the following java compilers:
+- java compiler (j2sdk1.4.2_11)
+
+
+Tested Architectures:
+---------------------
+
+compiled under:
+- Windows XP Home
+
+run under:
+- Windows XP Home
+ 
+
+
