@@ -1,14 +1,8 @@
-tabuleiro([
-[['empty',[]],['green',['w','s','e']],['green',['sw','se','n']],['green',['sw','s','se']],['green',['sw','se','ne','nw']],['green',['sw','se','s']],['green',['sw','se','n']],['green',['w','s','e']],['empty',[]]],
-[['empty',[]],['empty',[]],['green',['s','se']],['green',['sw','se']],['green',['s','n']],['green',['sw','se']],['green',['sw','s']],['empty',[]],['empty',[]]],
-[['empty',[]],['empty',[]],['empty',[]],['green',['s']],['green',['s']],['green',['s']],['empty',[]],['empty',[]],['empty',[]]],
-[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
-[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
-[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
-[['empty',[]],['empty',[]],['empty',[]],['red',['n']],['red',['n']],['red',['n']],['empty',[]],['empty',[]],['empty',[]]],
-[['empty',[]],['empty',[]],['red',['n','ne']],['red',['nw','ne']],['red',['s','n']],['red',['nw','ne']],['red',['nw','n']],['empty',[]],['empty',[]]],
-[['empty',[]],['red',['w','n','e']],['red',['nw','ne','s']],['red',['nw','n','ne']],['red',['sw','se','ne','nw']],['red',['nw','ne','n']],['red',['nw','ne','s']],['red',['w','n','e']],['empty',[]]]]).
+:- use_module(library(system)).
+:- include('board.pl').
+:- include('menu.pl').
 
+ploy:- menu.
  
 draw_gameboard:-X^(tabuleiro(X),draw_board(X)).
  
