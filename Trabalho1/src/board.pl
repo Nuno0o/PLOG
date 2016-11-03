@@ -1,4 +1,4 @@
-tabuleiro([
+board([
 [['empty',[]],['green',['w','s','e']],['green',['sw','se','n']],['green',['sw','s','se']],['green',['sw','se','ne','nw']],['green',['sw','se','s']],['green',['sw','se','n']],['green',['w','s','e']],['empty',[]]],
 [['empty',[]],['empty',[]],['green',['s','se']],['green',['sw','se']],['green',['s','n']],['green',['sw','se']],['green',['sw','s']],['empty',[]],['empty',[]]],
 [['empty',[]],['empty',[]],['empty',[]],['green',['s']],['green',['s']],['green',['s']],['empty',[]],['empty',[]],['empty',[]]],

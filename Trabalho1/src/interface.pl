@@ -1,9 +1,8 @@
-clear:-	clear(40), !.
+clear_screen:-
+	clear_screen(40), !.
 
-clear(0).
-clear(N):-
+clear_screen(0).
+clear_screen(N):-
 	nl,
 	N1 is N-1,
-	clear(N1).
-
-wait:- get_char(_).
+	clear_screen(N).
