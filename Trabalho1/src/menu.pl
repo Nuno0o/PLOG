@@ -5,7 +5,7 @@ menu:-
 		get_char(_),
 		Input = '1' -> mode;
 		Input = '2' -> help;
-		Input = '3';
+		Input = '3' -> halt;
 		menu
 	).
 
