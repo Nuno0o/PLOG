@@ -5,4 +5,4 @@ clear_screen(0).
 clear_screen(N):-
 	nl,
 	N1 is N-1,
-	clear_screen(N).
+	clear_screen(N1).

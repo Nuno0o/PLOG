@@ -5,80 +5,55 @@
 
 ploy:- menu.
 
-draw_gameboard:-X^(tabuleiro(X),draw_board(X)).
+%%%%%%%%%%% ROTAÇAO DE PEÇA %%%%%%%%%%%%%%%
 
-draw_board(Tab):-
-	draw_straightLine,nl,
-	draw_lines(Tab).
+% Exemplo de peca: ['red',['s']] %
 
-draw_lines([]).
-draw_lines([LIN|REST]):-(
-	write('|'),draw_line1(LIN),nl,
-	write('|'),draw_line2(LIN),nl,
-	write('|'),draw_line3(LIN),nl,
-	draw_straightLine,
-	nl,
-	draw_lines(REST)).
+rotatePiece(Peca,Orientation,PecaNova):-
+	rotatePiece_aux(Peca,Orientation,PecaNova).
 
-draw_line1([]).
-draw_line1([SQUARE|REST]):-
-	draw_line1sq1(SQUARE),
-	draw_line1sq2(SQUARE),
-	draw_line1sq3(SQUARE),
-	write('|'),
-	draw_line1(REST).
+rotatePiece_aux([Team|[Sides|Rest]],Orientation,[Team|[NewSides|Rest2]]):-
+	clockwise(Orientation) -> rotateClock(Sides,NewSides);(
+	counterClockwise(Orientation) -> rotateCounterClock(Sides,NewSides)).
 
-draw_line1sq1([]).
-draw_line1sq1([TEAM|[SIDES|NONE]]):-
-	member('nw',SIDES) -> write('\\'); write(' ').
+rotateClock([],[]).
+rotateClock([Side|Rest1],[NewSide|Rest2]):-
+	rotateC(Side,NewSide),rotateClock(Rest1,Rest2).
 
-draw_line1sq2([]).
-draw_line1sq2([TEAM|[SIDES|NONE]]):-
-	member('n',SIDES) -> write('|'); write(' ').
+rotateCounterClock([],[]).
+rotateCounterClock([Side|Rest1],[NewSide|Rest2]):-
+	rotateCC(Side,NewSide),rotateCounterClock(Rest1,Rest2).
 
-draw_line1sq3([]).
-draw_line1sq3([TEAM|[SIDES|NONE]]):-
-	member('ne',SIDES) -> write('/'); write(' ').
+%Rotate Clockwise
+clockwise(0).
+rotateC('n','ne').
+rotateC('ne','e').
+rotateC('e','se').
+rotateC('se','s').
+rotateC('s','sw').
+rotateC('sw','w').
+rotateC('w','nw').
+rotateC('nw','n').
+%Rotate CounterClockwise
+counterClockwise(1).
+rotateCC('n','nw').
+rotateCC('ne','n').
+rotateCC('e','ne').
+rotateCC('se','e').
+rotateCC('s','se').
+rotateCC('sw','s').
+rotateCC('w','sw').
+rotateCC('nw','w').
 
-draw_line2([]).
-draw_line2([SQUARE|REST]):-
-	draw_line2sq1(SQUARE),
-	draw_line2sq2(SQUARE),
-	draw_line2sq3(SQUARE),
-	write('|'),
-	draw_line2(REST).
+%%%%%%%%%%%%% SUBSTITUICAO DE PECA %%%%%%%%%%%%%%%
 
-draw_line2sq1([]).
-draw_line2sq1([TEAM|[SIDES|NONE]]):-
-	member('w',SIDES) -> write('-'); write(' ').
+getPeca(X,Y,Board,Peca):-
+	getPeca_aux(X,Y,Board,Peca).
 
-draw_line2sq2([]).
-draw_line2sq2([TEAM|[SIDES|NONE]]):-
-	=(TEAM,'green') -> write('X');
-	=(TEAM,'red') -> write('O') ; write(' ').
+getPeca_aux(_,_,[],_).
+getPeca_aux(X,Y,[CurrLine|Rest],Peca):-
+	Y == 0 -> getPeca_aux2(X,Y,CurrLine,Peca); (Y1 is Y - 1, getPeca_aux(X,Y1,Rest,Peca)).
 
-draw_line2sq3([]).
-draw_line2sq3([TEAM|[SIDES|NONE]]):-
-	member('e',SIDES) -> write('-'); write(' ').
-
-draw_line3([]).
-draw_line3([SQUARE|REST]):-
-	draw_line3sq1(SQUARE),
-	draw_line3sq2(SQUARE),
-	draw_line3sq3(SQUARE),
-	write('|'),
-	draw_line3(REST).
-
-draw_line3sq1([]).
-draw_line3sq1([TEAM|[SIDES|NONE]]):-
-	member('sw',SIDES) -> write('/'); write(' ').
-
-draw_line3sq2([]).
-draw_line3sq2([TEAM|[SIDES|NONE]]):-
-	member('s',SIDES) -> write('|'); write(' ').
-
-draw_line3sq3([]).
-draw_line3sq3([TEAM|[SIDES|NONE]]):-
-	member('se',SIDES) -> write('\\'); write(' ').
-
-draw_straightLine:-write('-------------------------------------').
+getPeca_aux2(_,_,[],_).
+getPeca_aux2(X,Y,[CurrPeca|Rest],Peca):-
+	X == 0 -> Peca = CurrPeca ; (X1 is X - 1, getPeca_aux2(X1,Y,Rest,Peca)).
