@@ -57,3 +57,19 @@ getPeca_aux(X,Y,[CurrLine|Rest],Peca):-
 getPeca_aux2(_,_,[],_).
 getPeca_aux2(X,Y,[CurrPeca|Rest],Peca):-
 	X == 0 -> Peca = CurrPeca ; (X1 is X - 1, getPeca_aux2(X1,Y,Rest,Peca)).
+
+
+setPeca(X,Y,Board,NewBoard,Peca):-
+	setPeca_aux(X,Y,Board,NewBoard,Peca).
+
+setPeca_aux(_,_,[],[],_).
+setPeca_aux(X,Y,[CurrLine|Rest],[CurrLine2|Rest2],Peca):-
+	setPeca_aux2(X,Y,CurrLine,CurrLine2,Peca),
+	Y1 is Y-1,
+	setPeca_aux(X,Y1,Rest,Rest2,Peca).
+
+setPeca_aux2(_,_,[],[],_).
+setPeca_aux2(X,Y,[CurrPeca|Rest],[CurrPeca2|Rest2],Peca):-
+	((X = 0, Y = 0) -> CurrPeca2 = Peca ; CurrPeca2 = CurrPeca),
+	X1 is X-1,
+	setPeca_aux2(X1,Y,Rest,Rest2,Peca).
