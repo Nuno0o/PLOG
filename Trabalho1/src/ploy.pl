@@ -75,17 +75,19 @@ setPiece_aux2(X,Y,[CurrPiece|Rest],[CurrPiece2|Rest2],Piece):-
 X1 is X-1,
 setPiece_aux2(X1,Y,Rest,Rest2,Piece).
 
-%movePiece(+X,+Y,+Orientation,+Board,-NewBoard)
+%movePiece(+X,+Y,+Orientation,+Length,+Board,-NewBoard)
 movePiece(X,Y,Orientation,Length,Board,NewBoard):-
 	getPiece(X,Y,Board,Piece),
-	assertCanMove(Piece,X,Y,Orientation,Length,Board),
-	setPiece(X2,Y2,Board,NewBoard,Piece).
+	calcEndPoint(X,Y,Orientation,Length,Xf,Yf),
+	assertCanMove(Piece,X,Y,Xf,Yf,Orientation,Length,Board),
+	setPiece(Xf,Yf,Board,IntBoard,Piece),
+	vazio(Vazio),
+	setPiece(X,Y,IntBoard,NewBoard,Vazio).
 
 
-assertCanMove(Piece,X,Y,Orientation,Length,Board):-
+assertCanMove(Piece,X,Y,Xf,Yf,Orientation,Length,Board):-
 	assertHasOrientation(Orientation,Piece),
 	assertValidLength(Length,Piece),
-	calcEndPoint(X,Y,Orientation,Length,Xf,Yf),
 	assertInsideBoundaries(Xf,Yf),
 	assertNoColision(X,Y,Orientation,Length,Board).
 
@@ -100,7 +102,8 @@ assertValidLength(Length,Piece):-
 
 assertValidLength_aux(Length,[_|[Orientations|_]]):-
 	length(Orientations,NDirections),
-	Length <= (NDirections mod 3) + 1.
+	(NDirections == 4 -> MaxLength is 1 ; MaxLength is NDirections),
+	Length =< MaxLength.
 
 %Coord multipliers
 multiplierX('s',0).
@@ -112,26 +115,26 @@ multiplierX('se',1).
 multiplierX('nw',-1).
 multiplierX('sw',-1).
 
-multiplierY('s',-1).
-multiplierY('n',1).
+multiplierY('s',1).
+multiplierY('n',-1).
 multiplierY('e',0).
 multiplierY('w',0).
-multiplierY('ne',1).
-multiplierY('se',-1).
-multiplierY('nw',1).
-multiplierY('sw',-1).
+multiplierY('ne',-1).
+multiplierY('se',1).
+multiplierY('nw',-1).
+multiplierY('sw',1).
 
 assertInsideBoundaries(Xf,Yf):-
 	Xf < 9,
 	Xf > -1,
 	Yf < 9,
 	Yf > -1.
-
+%calcEndPoint(+X,+Y,+Orientation,+Length,-Xf,-Yf)
 calcEndPoint(X,Y,Orientation,Length,Xf,Yf):-
 	multiplierX(Orientation,MultX),
 	multiplierY(Orientation,MultY),
-	Xf = (X + Length*MultX),
-	Yf = (Y + Length*MultY).
+	Xf is X + Length*MultX,
+	Yf is Y + Length*MultY.
 
 assertNoColision(X,Y,Orientation,Length,Board):-
 	calcEndPoint(X,Y,Orientation,Length,Xf,Yf),
@@ -139,7 +142,7 @@ assertNoColision(X,Y,Orientation,Length,Board):-
 	getPiece(Xf,Yf,Board,Piece2),
 	assertDifferentTeam(Piece1,Piece2),
 	Length1 is Length - 1,
-	(Length > 1) -> assertNoColision_inter(X,Y,Orientation,Length1,Board).
+	(Length > 1 -> assertNoColision_inter(X,Y,Orientation,Length1,Board) ; true).
 
 assertNoColision_inter(X,Y,Orientation,Length,Board):-
 	Length > 0 ->(
@@ -147,8 +150,8 @@ assertNoColision_inter(X,Y,Orientation,Length,Board):-
 		getPiece(Xf,Yf,Board,Piece),
 		assertEmpty(Piece),
 		Length1 is Length - 1,
-		assertNoColision_inter(X,Y,Orientation,Length1,Board).
-	)
+		assertNoColision_inter(X,Y,Orientation,Length1,Board)
+	); true.
 
 assertEmpty([Team|_]):-
 	Team == 'empty'.
