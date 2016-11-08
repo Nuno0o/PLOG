@@ -129,6 +129,7 @@ assertInsideBoundaries(Xf,Yf):-
 	Xf > -1,
 	Yf < 9,
 	Yf > -1.
+
 %calcEndPoint(+X,+Y,+Orientation,+Length,-Xf,-Yf)
 calcEndPoint(X,Y,Orientation,Length,Xf,Yf):-
 	multiplierX(Orientation,MultX),
@@ -158,3 +159,41 @@ assertEmpty([Team|_]):-
 
 assertDifferentTeam([Team1|_],[Team2|_]):-
 	Team1 \= Team2.
+
+%%%%%%%%%%%%% VERIFICA SE JOGO ACABOU %%%%%%%%%%%%%%%
+
+%assertGameEnded(+Board,-Team)
+assertGameEnded(Board,Team):-
+	assertCommanderDead(Board,'red'), Team is 'red';
+	assertCommanderDead(Board,'green'), Team is 'green';
+	assertAllSmallDead(Board,'red'), Team is 'red';
+	assertAllSmallDead(Board,'green'), Team is 'green'.
+
+assertCommanderDead(Board,Team):-
+	not(assertCommanderDead_aux(Board,Team,0)).
+
+assertCommanderDead_aux(Board,Team,Y):-
+	assertCommanderDead_aux2(Board,Team,0,Y),
+	Y1 is Y+1,
+	Y < 7 -> assertCommanderDead_aux(Board,Team,Y1).
+
+assertCommanderDead_aux2(Board,Team,X,Y):-
+	getPiece(X,Y,Board,[Team|[Orientations|_]]),
+	length(Orientations,4),
+	X1 is X+1,
+	X < 7 -> assertCommanderDead_aux2(Board,Team,X1,Y).
+
+assertAllSmallDead(Board,Team):-
+	not(assertAllSmallDead_aux(Board,Team,0)).
+
+assertAllSmallDead_aux(Board,Team,Y):-
+	assertAllSmallDead_aux2(Board,Team,0,Y),
+	Y1 is Y+1,
+	Y < 7 -> assertAllSmallDead_aux(Board,Team,Y1).
+
+assertAllSmallDead_aux2(Board,Team,X,Y):-
+	getPiece(X,Y,Board,[Team|[Orientations|_]]),
+	length(Orientations,Length),
+	Length \= 4,
+	X1 is X+1,
+	X < 7 -> assertAllSmallDead_aux2(Board,Team,X1,Y).
