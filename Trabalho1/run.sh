@@ -1,0 +1,1 @@
+sicstus -f -i -l src/ploy.pl --goal ploy.
