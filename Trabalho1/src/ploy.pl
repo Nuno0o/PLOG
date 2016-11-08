@@ -164,10 +164,11 @@ assertDifferentTeam([Team1|_],[Team2|_]):-
 
 %assertGameEnded(+Board,-Team)
 assertGameEnded(Board,Team):-
-	assertCommanderDead(Board,'red'), Team is 'red';
-	assertCommanderDead(Board,'green'), Team is 'green';
-	assertAllSmallDead(Board,'red'), Team is 'red';
-	assertAllSmallDead(Board,'green'), Team is 'green'.
+	assertCommanderDead(Board,'red')-> Team is 'red';
+	assertCommanderDead(Board,'green')-> Team is 'green';
+	assertAllSmallDead(Board,'red')-> Team is 'red';
+	assertAllSmallDead(Board,'green')-> Team is 'green';
+	false.
 
 assertCommanderDead(Board,Team):-
 	not(assertCommanderDead_aux(Board,Team,0)).
