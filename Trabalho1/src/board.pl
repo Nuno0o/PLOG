@@ -9,6 +9,16 @@ board([
 [['empty',[]],['empty',[]],['red',['n','ne']],['red',['nw','ne']],['red',['s','n']],['red',['nw','ne']],['red',['nw','n']],['empty',[]],['empty',[]]],
 [['empty',[]],['red',['w','n','e']],['red',['nw','ne','s']],['red',['nw','n','ne']],['red',['sw','se','ne','nw']],['red',['nw','ne','n']],['red',['nw','ne','s']],['red',['w','n','e']],['empty',[]]]]).
 
+boardFinal([
+[['empty',[]],['empty',[]],['empty',[]],['green',['sw','se','ne','nw']],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['empty',[]],['red',['n']],['red',['n']],['red',['n']],['empty',[]],['empty',[]],['empty',[]]],
+[['empty',[]],['empty',[]],['red',['n','ne']],['red',['nw','ne']],['red',['s','n']],['red',['nw','ne']],['red',['nw','n']],['empty',[]],['empty',[]]],
+[['empty',[]],['red',['w','n','e']],['red',['nw','ne','s']],['red',['nw','n','ne']],['red',['sw','se','ne','nw']],['red',['nw','ne','n']],['red',['nw','ne','s']],['red',['w','n','e']],['empty',[]]]]).
 vazio(['empty',[]]).
 
 draw_gameboard:-X^(board(X),draw_board(X)).

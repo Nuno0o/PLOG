@@ -164,37 +164,40 @@ assertDifferentTeam([Team1|_],[Team2|_]):-
 
 %assertGameEnded(+Board,-Team)
 assertGameEnded(Board,Team):-
-	assertCommanderDead(Board,'red')-> Team is 'red';
-	assertCommanderDead(Board,'green')-> Team is 'green';
-	assertAllSmallDead(Board,'red')-> Team is 'red';
-	assertAllSmallDead(Board,'green')-> Team is 'green';
+	assertCommanderDead(Board,'red')-> Team = 'green';
+	assertCommanderDead(Board,'green')-> Team = 'red';
+	assertAllSmallDead(Board,'red')-> Team = 'green';
+	assertAllSmallDead(Board,'green')-> Team = 'red';
 	false.
 
 assertCommanderDead(Board,Team):-
-	not(assertCommanderDead_aux(Board,Team,0)).
+	assertCommanderDead_aux(Board,Team,0).
 
 assertCommanderDead_aux(Board,Team,Y):-
 	assertCommanderDead_aux2(Board,Team,0,Y),
 	Y1 is Y+1,
-	Y < 7 -> assertCommanderDead_aux(Board,Team,Y1).
+	(Y < 8 -> assertCommanderDead_aux(Board,Team,Y1);true).
 
 assertCommanderDead_aux2(Board,Team,X,Y):-
-	getPiece(X,Y,Board,[Team|[Orientations|_]]),
-	length(Orientations,4),
+	getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
+	length(Orientations,Length),
+	write(X + Y),
+	(Team = TeamO -> Length \= 4; true),
 	X1 is X+1,
-	X < 7 -> assertCommanderDead_aux2(Board,Team,X1,Y).
+	(X < 8 -> assertCommanderDead_aux2(Board,Team,X1,Y);true).
 
 assertAllSmallDead(Board,Team):-
-	not(assertAllSmallDead_aux(Board,Team,0)).
+	assertAllSmallDead_aux(Board,Team,0).
 
 assertAllSmallDead_aux(Board,Team,Y):-
 	assertAllSmallDead_aux2(Board,Team,0,Y),
 	Y1 is Y+1,
-	Y < 7 -> assertAllSmallDead_aux(Board,Team,Y1).
+	(Y < 8 -> assertAllSmallDead_aux(Board,Team,Y1);true).
 
 assertAllSmallDead_aux2(Board,Team,X,Y):-
-	getPiece(X,Y,Board,[Team|[Orientations|_]]),
+	getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
 	length(Orientations,Length),
-	Length \= 4,
+	write(X + Y),
+	(Team = TeamO -> Length == 4; true),
 	X1 is X+1,
-	X < 7 -> assertAllSmallDead_aux2(Board,Team,X1,Y).
+	(X < 8 -> assertAllSmallDead_aux2(Board,Team,X1,Y);true).
