@@ -41,11 +41,13 @@ print_play:-
 	write('Choose an option: ').
 
 vs_player:-
-	new_pvp_game(Game),
-	play(Game).
+	%new_pvp_game(Game),
+	Mode = 'pvp',
+	play(Mode).
 
 vs_bot:-
-	new_pvb_game(Game),
-	play(Game).
+	%new_pvb_game(Game),
+	Mode = 'pvb',
+	play(Mode).
 
 %help:-
