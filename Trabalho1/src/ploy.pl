@@ -14,10 +14,11 @@ play:-
 
 %ciclo do jogo
 playCycle(N,Team,Board):-
-draw_board(Board),
-player_plays(Board,NewBoard),
+player_plays(Board,Team,NewBoard),
 NextN is N+1,
 (assertGameEnded(Board,WinnerTeam) -> endGame(Winner); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
+
+assertTeam([Team|_],Team).
 
 %switchTeam(+Team,-NextTeam)
 switchTeam(Team,NextTeam):-
@@ -28,14 +29,76 @@ switchTeam(Team,NextTeam):-
 %player_plays(+Board,+Team,-NewBoard)
 player_plays(Board,Team,NewBoard):-
 	jogador(Team,HumanOrBot),
-	(HumanOrBot = 'human' -> human_plays(Board,NewBoard) ; bot_plays(Board,NewBoard)).
+	(HumanOrBot = 'human' -> human_plays(Board,Team,NewBoard) ; bot_plays(Board,Team,NewBoard)).
+
+getXY(X,Y):-
+	write('X - '),
+	get_char(Input),	
+	X is Input - 48,
+	write(' Y - '),
+	get_char(Input),	
+	Y is Input - 48 .
+	
+chooseOptions([_|[Orientations|_]],Move,Rotate):-
+	length(Orientations,Length),
+	(Length = 1 -> write('Move(1) Rotate(2) Both(3)\n'); write('Move(1) Rotate(2)\n'))
+	get_char(Input),
+	(
+		get_char(_),
+		Input = '1' -> (Move = 1,Rotate = 0);
+		Input = '2' -> (Move = 0,Rotate = 1);
+		(Input = '3', Length = 1) -> (Move = 1,Rotate = 1);
+		false
+	).
+
+chooseRotate(Board, X, Y, NewBoard):-
+	getPiece(X,Y,Board,Piece),
+	write('(1)Clockwise (2)CounterClockwise\nInput: '),
+	get_char(Input),
+	(
+	get_char(_),
+	Angle is Input - 48,
+	rotatePiece(Piece,Angle,NewPiece),setPiece(X,Y,Board,NewBoard,NewPiece),
+	false
+	).
+	
+chooseMove(Board, X, Y, NewBoard):-
+	getPiece(X,Y,Board,Piece),
+	write('Orientation(n,s,w,e,nw,ne,sw,se): '),
+	get_char(InputOri),
+	(
+	get_char(_),
+	)
+	write('Length(1-3): '),
+	get_char(InputLen),
+	(
+	get_char(_),
+	)
+	Length is InputLen - 48,
+	movePiece(X,Y,InputOri,Length,Board,NewBoard)
+	.
 
 %human_plays(+Board,-NewBoard)
-human_plays(Board,NewBoard):-
-	true.
+human_plays(Board,Team,NewBoard):-	
+	repeat,
+	draw_board(Board),
+	getXY(X,Y),
+	getPiece(X,Y,Board,Piece),
+	assertTeam(Piece,Team),
+	chooseOptions(Piece,Move,Rotate),
+	(	
+	(Rotate = 1 , Move = 0) -> chooseRotate(Board, X, Y, NewBoard);
+	(Rotate = 0 , Move = 1) -> chooseMove(Board, X, Y, NewBoard);
+	(Rotate = 1 , Move = 1) -> (chooseRotate(Board, X, Y, IntBoard),chooseMove(IntBoard, X, Y, NewBoard));
+	true
+	),
+	!,
+	NewBoard = IntBoard
+	
+	.
 
 %bot_plays(+Board,-NewBoard)
-bot_plays(Board,NewBoard):-
+bot_plays(Board,Team,NewBoard):-
 	true.
 
 %endGame(+WinnerTeam)
@@ -48,6 +111,7 @@ endGame(WinnerTeam):-
 % Exemplo de Piece: ['red',['s']] %
 
 rotatePiece(Piece,Orientation,PieceNova):-
+between(-1,2,Orientation),
 rotatePiece_aux(Piece,Orientation,PieceNova).
 
 rotatePiece_aux([Team|[Sides|Rest]],Orientation,[Team|[NewSides|Rest2]]):-
@@ -87,7 +151,9 @@ rotateCC('nw','w').
 
 %getPiece(+X,+Y,+Board,-Piece)
 getPiece(X,Y,Board,Piece):-
-getPiece_aux(X,Y,Board,Piece).
+	between(-1,9,X),
+	between(-1,9,Y),
+	getPiece_aux(X,Y,Board,Piece).
 
 getPiece_aux(_,_,[],_).
 getPiece_aux(X,Y,[CurrLine|Rest],Piece):-
