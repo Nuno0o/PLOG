@@ -5,38 +5,47 @@
 
 ploy:- menu.
 
+%play
+play:-
+(
+	board(B),
+	playCycle(0,'red',B)
+).
+
+%ciclo do jogo
+playCycle(N,Team,Board):-
+draw_board(Board),
+player_plays(Board,NewBoard),
+NextN is N+1,
+(assertGameEnded(Board,WinnerTeam) -> endGame(Winner); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
+
+%switchTeam(+Team,-NextTeam)
+switchTeam(Team,NextTeam):-
+(
+  Team = 'red' -> NextTeam = 'green'; NextTeam = 'red'
+).
+
+%player_plays(+Board,+Team,-NewBoard)
+player_plays(Board,Team,NewBoard):-
+	jogador(Team,HumanOrBot),
+	(HumanOrBot = 'human' -> human_plays(Board,NewBoard) ; bot_plays(Board,NewBoard)).
+
+%human_plays(+Board,-NewBoard)
+human_plays(Board,NewBoard):-
+	true.
+
+%bot_plays(+Board,-NewBoard)
+bot_plays(Board,NewBoard):-
+	true.
+
+%endGame(+WinnerTeam)
+endGame(WinnerTeam):-
+	nl,nl,write(WinnerTeam), write(' won the game!').
+
+
 %%%%%%%%%%% ROTAÇAO DE PEÇA %%%%%%%%%%%%%%%
 
 % Exemplo de Piece: ['red',['s']] %
-
-%seleciona o modo de jogo correcto
-play(Mode):-
-(
-  Mode = 'pvp' -> Board = board, Team = 'red', play_pvp(Board,Team);
-  Mode = 'pvb' -> Board = board, Team = 'red', play_pvb(Board,Team)
-).
-
-%retorna a cor do oponente
-switchTeam(Team1,Team2):-
-(
-  Team1 = 'red' -> Team2 = 'green';
-  Team1 = 'green' -> Team2 = 'red'
-).
-
-%pede e processa os inputs do jogador TODO
-input_loop(Board,Team,Move,Rotate,Move1,Rotate1):-
-draw_board(Board).
-
-%ciclo do jogo
-play_pvp(Board,Team):-
-Move = 0,
-Rotate = 0,
-repeat,  %pede input ate o jogador ter rodado/movido uma peca
-input_loop(Board,Team,Move,Rotate,Move1,Rotate1),
-Move = Move1,
-Rotate = Rotate1,
-(Move = 1, Rotate = 1),
-not(assertGameEnded(Board,Team)) -> (switchTeam(Team,Team1);play_pvp(Board,Team1)). %caso o jogo n tenha cabado, deixa o oponente jogar
 
 rotatePiece(Piece,Orientation,PieceNova):-
 rotatePiece_aux(Piece,Orientation,PieceNova).

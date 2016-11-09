@@ -1,4 +1,5 @@
 menu:-
+	abolish(jogador/2),
 	print_menu,
 	get_char(Input),
 	(
@@ -41,13 +42,13 @@ print_play:-
 	write('Choose an option: ').
 
 vs_player:-
-	%new_pvp_game(Game),
-	Mode = 'pvp',
-	play(Mode).
+	assert(jogador('red','human')),
+	assert(jogador('green','human')),
+	play.
 
 vs_bot:-
-	%new_pvb_game(Game),
-	Mode = 'pvb',
-	play(Mode).
+	assert(jogador('red','human')),
+	assert(jogador('green','bot')),
+	play.
 
 %help:-
