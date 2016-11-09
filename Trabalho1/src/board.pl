@@ -25,17 +25,20 @@ draw_gameboard:-X^(board(X),draw_board(X)).
 
 draw_board(Tab):-
   nl,
+  write(' | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |'),nl,
 	draw_straightLine,nl,
-	draw_lines(Tab).
+	draw_lines(Tab,0).
 
-draw_lines([]).
-draw_lines([LIN|REST]):-(
-	write('|'),draw_line1(LIN),nl,
+draw_lines([],_).
+draw_lines([LIN|REST],LineNumber):-(
+	write(' |'),draw_line1(LIN),nl,
+  write(LineNumber),
 	write('|'),draw_line2(LIN),nl,
-	write('|'),draw_line3(LIN),nl,
+	write(' |'),draw_line3(LIN),nl,
 	draw_straightLine,
 	nl,
-	draw_lines(REST)).
+  LineNumber2 is LineNumber+1,
+	draw_lines(REST,LineNumber2)).
 
 draw_line1([]).
 draw_line1([SQUARE|REST]):-
@@ -71,8 +74,8 @@ draw_line2sq1([TEAM|[SIDES|NONE]]):-
 
 draw_line2sq2([]).
 draw_line2sq2([TEAM|[SIDES|NONE]]):-
-	=(TEAM,'green') -> write('X');
-	=(TEAM,'red') -> write('O') ; write(' ').
+	=(TEAM,'green') -> write('G');
+	=(TEAM,'red') -> write('R') ; write(' ').
 
 draw_line2sq3([]).
 draw_line2sq3([TEAM|[SIDES|NONE]]):-
@@ -98,4 +101,4 @@ draw_line3sq3([]).
 draw_line3sq3([TEAM|[SIDES|NONE]]):-
 	member('se',SIDES) -> write('\\'); write(' ').
 
-draw_straightLine:-write('-------------------------------------').
+draw_straightLine:-write('---------------------------------------').

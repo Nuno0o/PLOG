@@ -1,14 +1,15 @@
 menu:-
 	abolish(jogador/2),
 	print_menu,
-	get_char(Input),
+	read(Input),
 	(
-		get_char(_),
-		Input = '1' -> mode;
-		Input = '2' -> help;
-		Input = '3' -> halt;
-		menu
-	).
+	Input = 1 -> mode;
+	Input = 2 -> help;
+	Input = 3 -> false;
+	true
+	),
+	menu
+.
 
 print_menu:-
 	nl,
@@ -22,14 +23,15 @@ print_menu:-
 
 mode:-
 	print_play,
-	get_char(Input),
+	read(Input),
 	(
-		get_char(_),
-		Input = '1' -> vs_player;
-		Input = '2' -> vs_bot;
-		Input = '3' -> menu;
-		mode
-	).
+	Input = 1 -> vs_player;
+	Input = 2 -> vs_bot;
+	Input = 3 -> menu;
+	true
+	),
+	mode
+.
 
 print_play:-
 	nl,

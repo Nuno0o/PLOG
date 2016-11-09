@@ -1,7 +1,7 @@
 :- use_module(library(system)).
 :- include('board.pl').
 :- include('menu.pl').
-:- include('interface.pl').
+:- include('util.pl').
 
 ploy:- menu.
 
@@ -16,7 +16,7 @@ play:-
 playCycle(N,Team,Board):-
 player_plays(Board,Team,NewBoard),
 NextN is N+1,
-(assertGameEnded(Board,WinnerTeam) -> endGame(Winner); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
+(assertGameEnded(Board,WinnerTeam) -> endGame(WinnerTeam); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
 
 assertTeam([Team|_],Team).
 
@@ -33,69 +33,61 @@ player_plays(Board,Team,NewBoard):-
 
 getXY(X,Y):-
 	write('X - '),
-	get_char(Input),	
-	X is Input - 48,
-	write(' Y - '),
-	get_char(Input),	
-	Y is Input - 48 .
-	
+	read(Input),
+	X = Input,
+	get_char(_),
+	write('Y - '),
+	read(Input2),
+	Y = Input2.
+
 chooseOptions([_|[Orientations|_]],Move,Rotate):-
 	length(Orientations,Length),
-	(Length = 1 -> write('Move(1) Rotate(2) Both(3)\n'); write('Move(1) Rotate(2)\n'))
-	get_char(Input),
+	(Length = 1 -> write('Move(1) Rotate(2) Both(3)\n'); write('Move(1) Rotate(2)\n')),
+	read(Input),
 	(
-		get_char(_),
-		Input = '1' -> (Move = 1,Rotate = 0);
-		Input = '2' -> (Move = 0,Rotate = 1);
-		(Input = '3', Length = 1) -> (Move = 1,Rotate = 1);
-		false
-	).
+	Input = 1 -> (Move = 1,Rotate = 0);
+	Input = 2 -> (Move = 0,Rotate = 1);
+	(Input = 3, Length = 1) -> (Move = 1,Rotate = 1);
+	false
+	)
+.
 
 chooseRotate(Board, X, Y, NewBoard):-
 	getPiece(X,Y,Board,Piece),
-	write('(1)Clockwise (2)CounterClockwise\nInput: '),
-	get_char(Input),
-	(
-	get_char(_),
-	Angle is Input - 48,
-	rotatePiece(Piece,Angle,NewPiece),setPiece(X,Y,Board,NewBoard,NewPiece),
-	false
-	).
-	
+	write('(1)Clockwise (2)CounterClockwise: '),
+	read(Input),
+	Angle is Input-1,
+	rotatePiece(Piece,Angle,NewPiece),setPiece(X,Y,Board,NewBoard,NewPiece)
+.
+
 chooseMove(Board, X, Y, NewBoard):-
 	getPiece(X,Y,Board,Piece),
 	write('Orientation(n,s,w,e,nw,ne,sw,se): '),
-	get_char(InputOri),
-	(
-	get_char(_),
-	)
+	read(InputOri),
 	write('Length(1-3): '),
-	get_char(InputLen),
-	(
-	get_char(_),
-	)
-	Length is InputLen - 48,
+	read(InputLen),
+	Length = InputLen,
 	movePiece(X,Y,InputOri,Length,Board,NewBoard)
 	.
 
 %human_plays(+Board,-NewBoard)
-human_plays(Board,Team,NewBoard):-	
+human_plays(Board,Team,NewBoard):-
 	repeat,
+	nl,nl,
+	write('             '),write(Team),write(' team turn'),nl,
 	draw_board(Board),
 	getXY(X,Y),
 	getPiece(X,Y,Board,Piece),
 	assertTeam(Piece,Team),
 	chooseOptions(Piece,Move,Rotate),
-	(	
+	(
 	(Rotate = 1 , Move = 0) -> chooseRotate(Board, X, Y, NewBoard);
 	(Rotate = 0 , Move = 1) -> chooseMove(Board, X, Y, NewBoard);
 	(Rotate = 1 , Move = 1) -> (chooseRotate(Board, X, Y, IntBoard),chooseMove(IntBoard, X, Y, NewBoard));
 	true
 	),
-	!,
-	NewBoard = IntBoard
-	
-	.
+	!
+.
 
 %bot_plays(+Board,-NewBoard)
 bot_plays(Board,Team,NewBoard):-
@@ -285,7 +277,6 @@ Y1 is Y+1,
 assertCommanderDead_aux2(Board,Team,X,Y):-
 getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
 length(Orientations,Length),
-write(X + Y),
 (Team = TeamO -> Length \= 4; true),
 X1 is X+1,
 (X < 8 -> assertCommanderDead_aux2(Board,Team,X1,Y);true).
@@ -301,7 +292,6 @@ Y1 is Y+1,
 assertAllSmallDead_aux2(Board,Team,X,Y):-
 getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
 length(Orientations,Length),
-write(X + Y),
 (Team = TeamO -> Length == 4; true),
 X1 is X+1,
 (X < 8 -> assertAllSmallDead_aux2(Board,Team,X1,Y);true).
