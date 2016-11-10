@@ -16,7 +16,7 @@ play:-
 playCycle(N,Team,Board):-
 player_plays(Board,Team,NewBoard),
 NextN is N+1,
-(assertGameEnded(Board,WinnerTeam) -> endGame(WinnerTeam); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
+(assertGameEnded(NewBoard,WinnerTeam) -> endGame(WinnerTeam); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
 
 assertTeam([Team|_],Team).
 
