@@ -1,5 +1,6 @@
 menu:-
 	abolish(jogador/2),
+	abolish(difficulty/1),
 	print_menu,
 	read(Input),
 	(
@@ -38,7 +39,7 @@ print_play:-
 	write('PLAY'), nl,
 	nl,
 	write('1. Vs. Player'), nl,
-	write('2. Vs. AI TODO'), nl,
+	write('2. Vs. AI'), nl,
 	write('3. Back'), nl,
 	nl,
 	write('Choose an option: ').
@@ -49,8 +50,15 @@ vs_player:-
 	play.
 
 vs_bot:-
+	repeat,nl,
+	write('Insert bot difficulty(0 - random, 1 - greedy): '),nl,
+	read(Difficulty),
+	availlableDifficulty(Difficulty),
+	assert(difficulty(Difficulty)),
+	!,
 	assert(jogador('red','human')),
 	assert(jogador('green','bot')),
 	play.
 
-%help:-
+availlableDifficulty(0).
+availlableDifficulty(1).

@@ -1,4 +1,6 @@
 :- use_module(library(system)).
+:- use_module(library(between)).
+:- use_module(library(random)).
 :- include('board.pl').
 :- include('menu.pl').
 :- include('util.pl').
@@ -70,7 +72,7 @@ chooseMove(Board, X, Y, NewBoard):-
 	movePiece(X,Y,InputOri,Length,Board,NewBoard)
 	.
 
-%human_plays(+Board,-NewBoard)
+%human_plays(+Board,+Team,-NewBoard)
 human_plays(Board,Team,NewBoard):-
 	repeat,
 	nl,nl,
@@ -91,11 +93,64 @@ human_plays(Board,Team,NewBoard):-
 
 %bot_plays(+Board,-NewBoard)
 bot_plays(Board,Team,NewBoard):-
-	true.
+	difficulty(Dif),
+	bot_plays_diff(Dif,Board,Team,NewBoard)
+.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%modo aleatorio
+bot_plays_diff(Dif,Board,Team,NewBoard):-
+	Dif = 0,
+	repeat,
+	getRandomXY(X,Y),
+	getPiece(X,Y,Board,Piece),
+	assertTeam(Piece,Team),
+	% MoveOrRotate = 0 -> roda, 1-3 -> move
+	random(0,3,MoveOrRotate),
+	moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard),
+	!
+.
+%getRandomXY(-X,-Y)
+getRandomXY(X,Y):-
+	random(0,8,X),
+	random(0,8,Y)
+.
+%getRandomOriAndLength(+Piece,-Orientation,-Length)
+getRandomOriAndLength([_|[Orientations|_]],Orientation,Length):-
+	random_member(Orientation,Orientations),
+	length(Orientations,L),
+	random(1,L,Length)
+.
+%move
+moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
+	between(1,3,MoveOrRotate),
+	getRandomOriAndLength(Piece,Orientation,Length),
+	movePiece(X,Y,Orientation,Length,Board,NewBoard)
+.
+%rotate
+moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
+	MoveOrRotate = 0,
+	random(0,1,Angle),
+	rotatePiece(Piece,Angle,NewPiece),
+	setPiece(X,Y,Board,NewBoard,NewPiece)
+.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%modo ganancioso
+bot_plays_diff(Dif,Board,Team,NewBoard):-
+	Dif = 1
+
+.
+
 
 %endGame(+WinnerTeam)
 endGame(WinnerTeam):-
 	nl,nl,write(WinnerTeam), write(' won the game!').
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 %%%%%%%%%%% ROTAÇAO DE PEÇA %%%%%%%%%%%%%%%
@@ -103,7 +158,7 @@ endGame(WinnerTeam):-
 % Exemplo de Piece: ['red',['s']] %
 
 rotatePiece(Piece,Orientation,PieceNova):-
-between(-1,2,Orientation),
+between(0,1,Orientation),
 rotatePiece_aux(Piece,Orientation,PieceNova).
 
 rotatePiece_aux([Team|[Sides|Rest]],Orientation,[Team|[NewSides|Rest2]]):-
@@ -155,6 +210,8 @@ getPiece_aux2(_,_,[],_).
 getPiece_aux2(X,Y,[CurrPiece|Rest],Piece):-
 X == 0 -> Piece = CurrPiece ; (X1 is X - 1, getPiece_aux2(X1,Y,Rest,Piece)).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %setPiece(+X,+Y,+Board,-NewBoard,+Piece)
 setPiece(X,Y,Board,NewBoard,Piece):-
 setPiece_aux(X,Y,Board,NewBoard,Piece).
@@ -170,6 +227,8 @@ setPiece_aux2(X,Y,[CurrPiece|Rest],[CurrPiece2|Rest2],Piece):-
 ((X = 0, Y = 0) -> CurrPiece2 = Piece ; CurrPiece2 = CurrPiece),
 X1 is X-1,
 setPiece_aux2(X1,Y,Rest,Rest2,Piece).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %movePiece(+X,+Y,+Orientation,+Length,+Board,-NewBoard)
 movePiece(X,Y,Orientation,Length,Board,NewBoard):-
