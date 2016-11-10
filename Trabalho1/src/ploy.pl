@@ -14,6 +14,8 @@ play:-
 	playCycle(0,'red',B)
 ).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %ciclo do jogo
 playCycle(N,Team,Board):-
 player_plays(Board,Team,NewBoard),
@@ -22,16 +24,41 @@ NextN is N+1,
 
 assertTeam([Team|_],Team).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %switchTeam(+Team,-NextTeam)
 switchTeam(Team,NextTeam):-
 (
   Team = 'red' -> NextTeam = 'green'; NextTeam = 'red'
 ).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %player_plays(+Board,+Team,-NewBoard)
 player_plays(Board,Team,NewBoard):-
 	jogador(Team,HumanOrBot),
 	(HumanOrBot = 'human' -> human_plays(Board,Team,NewBoard) ; bot_plays(Board,Team,NewBoard)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%human_plays(+Board,+Team,-NewBoard)
+human_plays(Board,Team,NewBoard):-
+	repeat,
+	nl,nl,
+	write('             '),write(Team),write(' team turn'),nl,
+	draw_board(Board),
+	getXY(X,Y),
+	getPiece(X,Y,Board,Piece),
+	assertTeam(Piece,Team),
+	chooseOptions(Piece,Move,Rotate),
+	(
+	(Rotate = 1 , Move = 0) -> chooseRotate(Board, X, Y, NewBoard);
+	(Rotate = 0 , Move = 1) -> chooseMove(Board, X, Y, NewBoard);
+	(Rotate = 1 , Move = 1) -> (chooseRotate(Board, X, Y, IntBoard),chooseMove(IntBoard, X, Y, NewBoard));
+	true
+	),
+	!
+.
 
 getXY(X,Y):-
 	write('X - '),
@@ -72,24 +99,7 @@ chooseMove(Board, X, Y, NewBoard):-
 	movePiece(X,Y,InputOri,Length,Board,NewBoard)
 	.
 
-%human_plays(+Board,+Team,-NewBoard)
-human_plays(Board,Team,NewBoard):-
-	repeat,
-	nl,nl,
-	write('             '),write(Team),write(' team turn'),nl,
-	draw_board(Board),
-	getXY(X,Y),
-	getPiece(X,Y,Board,Piece),
-	assertTeam(Piece,Team),
-	chooseOptions(Piece,Move,Rotate),
-	(
-	(Rotate = 1 , Move = 0) -> chooseRotate(Board, X, Y, NewBoard);
-	(Rotate = 0 , Move = 1) -> chooseMove(Board, X, Y, NewBoard);
-	(Rotate = 1 , Move = 1) -> (chooseRotate(Board, X, Y, IntBoard),chooseMove(IntBoard, X, Y, NewBoard));
-	true
-	),
-	!
-.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %bot_plays(+Board,-NewBoard)
 bot_plays(Board,Team,NewBoard):-
