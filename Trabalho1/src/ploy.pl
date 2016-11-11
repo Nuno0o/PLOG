@@ -96,7 +96,7 @@ chooseMove(Board, X, Y, NewBoard):-
 	write('Length(1-3): '),
 	read(InputLen),
 	Length = InputLen,
-	movePiece(X,Y,InputOri,Length,Board,NewBoard)
+	movePiece(X,Y,InputOri,Length,Board,NewBoard,_)
 	.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,6 +106,7 @@ bot_plays(Board,Team,NewBoard):-
 	difficulty(Dif),
 	bot_plays_diff(Dif,Board,Team,NewBoard)
 .
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %modo aleatorio
@@ -135,11 +136,14 @@ getRandomOriAndLength([_|[Orientations|_]],Orientation,Length):-
 moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
 	between(1,3,MoveOrRotate),
 	getRandomOriAndLength(Piece,Orientation,Length),
-	movePiece(X,Y,Orientation,Length,Board,NewBoard)
+	movePiece(X,Y,Orientation,Length,Board,NewBoard,_)
 .
 %rotate
 moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
 	MoveOrRotate = 0,
+	%% É feito um movimento para um tabuleiro nao usado para que a probabilidade de rotate falhar seja igual à de move falhar
+	getRandomOriAndLength(Piece,Orientation,Length),
+	movePiece(X,Y,Orientation,Length,Board,_,_),
 	random(0,1,Angle),
 	rotatePiece(Piece,Angle,NewPiece),
 	setPiece(X,Y,Board,NewBoard,NewPiece)
@@ -150,17 +154,17 @@ moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %modo ganancioso
 bot_plays_diff(Dif,Board,Team,NewBoard):-
-	Dif = 1
-
+	Dif = 1,
+	findGreedyPlay(Board,X,Y,Orientation,Length,Consumed)
 .
+%findGreedyPlay(+Board,-X,-Y,-Orientation,-Length,-Consumed)
+findGreedyPlay(Board,X,Y,Orientation,Length,Board,Consumed).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %endGame(+WinnerTeam)
 endGame(WinnerTeam):-
 	nl,nl,write(WinnerTeam), write(' won the game!').
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 %%%%%%%%%%% ROTAÇAO DE PEÇA %%%%%%%%%%%%%%%
@@ -257,11 +261,13 @@ setPiece_aux2(X,Y,[CurrPiece|Rest],[CurrPiece2|Rest2],Piece):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%movePiece(+X,+Y,+Orientation,+Length,+Board,-NewBoard)
-movePiece(X,Y,Orientation,Length,Board,NewBoard):-
+%movePiece(+X,+Y,+Orientation,+Length,+Board,-NewBoard,-Consumed) consumed= length da peça que foi consumida(0 empty, 1 shield, etc)
+movePiece(X,Y,Orientation,Length,Board,NewBoard,Consumed):-
 getPiece(X,Y,Board,Piece),
 calcEndPoint(X,Y,Orientation,Length,Xf,Yf),
 assertCanMove(Piece,X,Y,Xf,Yf,Orientation,Length,Board),
+getPiece(Xf,Yf,Board,[_|[ConsOri|_]]),
+length(ConsOri,Consumed),
 setPiece(Xf,Yf,Board,IntBoard,Piece),
 vazio(Vazio),
 setPiece(X,Y,IntBoard,NewBoard,Vazio).
@@ -284,9 +290,13 @@ assertValidLength_aux(Length,Piece).
 
 assertValidLength_aux(Length,[_|[Orientations|_]]):-
 length(Orientations,NDirections),
-(NDirections == 4 -> MaxLength is 1 ; MaxLength is NDirections),
+nDirections(NDirections,MaxLength),
 Length =< MaxLength.
 
+nDirections(1,1).
+nDirections(2,2).
+nDirections(3,3).
+nDirections(4,1).
 %Coord multipliers
 multiplierX('s',0).
 multiplierX('n',0).
@@ -305,6 +315,7 @@ multiplierY('ne',-1).
 multiplierY('se',1).
 multiplierY('nw',-1).
 multiplierY('sw',1).
+
 
 assertInsideBoundaries(Xf,Yf):-
 Xf < 9,
@@ -346,11 +357,11 @@ Team1 \= Team2.
 
 %assertGameEnded(+Board,-Team)
 assertGameEnded(Board,Team):-
-assertCommanderDead(Board,'red')-> Team = 'green';
+(assertCommanderDead(Board,'red')-> Team = 'green';
 assertCommanderDead(Board,'green')-> Team = 'red';
 assertAllSmallDead(Board,'red')-> Team = 'green';
 assertAllSmallDead(Board,'green')-> Team = 'red';
-false.
+false).
 
 assertCommanderDead(Board,Team):-
 assertCommanderDead_aux(Board,Team,0).
