@@ -172,16 +172,16 @@ between(0,1,Orientation),
 rotatePiece_aux(Piece,Orientation,PieceNova).
 
 rotatePiece_aux([Team|[Sides|Rest]],Orientation,[Team|[NewSides|Rest2]]):-
-clockwise(Orientation) -> rotateClock(Sides,NewSides);(
-counterClockwise(Orientation) -> rotateCounterClock(Sides,NewSides)).
+	rotatePiece_aux2(Orientation,Sides,NewSides).
 
-rotateClock([],[]).
-rotateClock([Side|Rest1],[NewSide|Rest2]):-
-rotateC(Side,NewSide),rotateClock(Rest1,Rest2).
+rotatePiece_aux2(_,[],[]).
+rotatePiece_aux2(Orientation,[Side|Rest1],[NewSide|Rest2]):-
+	clockwise(Orientation),
+	rotateC(Side,NewSide),rotatePiece_aux2(Orientation,Rest1,Rest2).
 
-rotateCounterClock([],[]).
-rotateCounterClock([Side|Rest1],[NewSide|Rest2]):-
-rotateCC(Side,NewSide),rotateCounterClock(Rest1,Rest2).
+rotatePiece_aux2(Orientation,[Side|Rest1],[NewSide|Rest2]):-
+	counterClockwise(Orientation),
+	rotateCC(Side,NewSide),rotatePiece_aux2(Orientation,Rest1,Rest2).
 
 %Rotate Clockwise
 clockwise(0).
@@ -210,15 +210,25 @@ rotateCC('nw','w').
 getPiece(X,Y,Board,Piece):-
 	between(-1,9,X),
 	between(-1,9,Y),
-	getPiece_aux(X,Y,Board,Piece).
+	getPiece_aux(0,X,Y,Board,Piece).
 
-getPiece_aux(_,_,[],_).
-getPiece_aux(X,Y,[CurrLine|Rest],Piece):-
-Y == 0 -> getPiece_aux2(X,Y,CurrLine,Piece); (Y1 is Y - 1, getPiece_aux(X,Y1,Rest,Piece)).
+getPiece_aux(_,_,_,[],_).
+getPiece_aux(Y,X,Y,[CurrLine|Rest],Piece):-
+	getPiece_aux2(0,X,Y,CurrLine,Piece).
 
-getPiece_aux2(_,_,[],_).
-getPiece_aux2(X,Y,[CurrPiece|Rest],Piece):-
-X == 0 -> Piece = CurrPiece ; (X1 is X - 1, getPiece_aux2(X1,Y,Rest,Piece)).
+getPiece_aux(N,X,Y,[CurrLine|Rest],Piece):-
+	N \= Y,
+	Y1 is N + 1,
+	getPiece_aux(Y1,X,Y,Rest,Piece).
+
+getPiece_aux2(_,_,_,[],_).
+getPiece_aux2(X,X,Y,[CurrPiece|Rest],Piece):-
+	Piece = CurrPiece.
+
+getPiece_aux2(N,X,Y,[CurrLine|Rest],Piece):-
+	N \= X,
+	X1 is N + 1,
+	getPiece_aux2(X1,X,Y,Rest,Piece).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -228,15 +238,22 @@ setPiece_aux(X,Y,Board,NewBoard,Piece).
 
 setPiece_aux(_,_,[],[],_).
 setPiece_aux(X,Y,[CurrLine|Rest],[CurrLine2|Rest2],Piece):-
-setPiece_aux2(X,Y,CurrLine,CurrLine2,Piece),
-Y1 is Y-1,
-setPiece_aux(X,Y1,Rest,Rest2,Piece).
+	setPiece_aux2(X,Y,CurrLine,CurrLine2,Piece),
+	Y1 is Y-1,
+	setPiece_aux(X,Y1,Rest,Rest2,Piece).
 
 setPiece_aux2(_,_,[],[],_).
 setPiece_aux2(X,Y,[CurrPiece|Rest],[CurrPiece2|Rest2],Piece):-
-((X = 0, Y = 0) -> CurrPiece2 = Piece ; CurrPiece2 = CurrPiece),
-X1 is X-1,
-setPiece_aux2(X1,Y,Rest,Rest2,Piece).
+	X = 0, Y = 0,
+	CurrPiece2 = Piece,
+	X1 is X-1,
+	setPiece_aux2(X1,Y,Rest,Rest2,Piece).
+
+setPiece_aux2(X,Y,[CurrPiece|Rest],[CurrPiece2|Rest2],Piece):-
+	(X \= 0; Y \= 0),
+	CurrPiece2 = CurrPiece,
+	X1 is X-1,
+	setPiece_aux2(X1,Y,Rest,Rest2,Piece).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
