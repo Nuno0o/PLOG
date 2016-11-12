@@ -18,8 +18,8 @@ play:-
 
 %ciclo do jogo
 playCycle(N,Team,Board):-
-player_plays(Board,Team,NewBoard),
-NextN is N+1,
+player_plays(N,Board,Team,NewBoard),
+(Team = 'green' -> NextN is N+1 ; NextN is N),
 (assertGameEnded(NewBoard,WinnerTeam) -> endGame(WinnerTeam); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
 
 assertTeam([Team|_],Team).
@@ -34,18 +34,18 @@ switchTeam(Team,NextTeam):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%player_plays(+Board,+Team,-NewBoard)
-player_plays(Board,Team,NewBoard):-
+%player_plays(+N,+Board,+Team,-NewBoard)
+player_plays(N,Board,Team,NewBoard):-
 	jogador(Team,HumanOrBot),
-	(HumanOrBot = 'human' -> human_plays(Board,Team,NewBoard) ; bot_plays(Board,Team,NewBoard)).
+	(HumanOrBot = 'human' -> human_plays(N,Board,Team,NewBoard) ; bot_plays(N,Board,Team,NewBoard)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%human_plays(+Board,+Team,-NewBoard)
-human_plays(Board,Team,NewBoard):-
+%human_plays(+N,+Board,+Team,-NewBoard)
+human_plays(N,Board,Team,NewBoard):-
 	repeat,
 	nl,nl,
-	write('             '),write(Team),write(' team turn'),nl,
+	write('             '),write(Team),write(' team turn '),write(N),nl,
 	draw_board(Board),
 	getXY(X,Y),
 	getPiece(X,Y,Board,Piece),
@@ -102,8 +102,11 @@ chooseMove(Board, X, Y, NewBoard,Xf,Yf):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%bot_plays(+Board,-NewBoard)
-bot_plays(Board,Team,NewBoard):-
+%bot_plays(+N,+Board,+Team,-NewBoard)
+bot_plays(N,Board,Team,NewBoard):-
+	nl,nl,
+	write('             '),write(Team),write(' team turn '),write(N),write(' (bot)'),nl,
+	draw_board(Board),
 	difficulty(Dif),
 	bot_plays_diff(Dif,Board,Team,NewBoard)
 .
@@ -253,9 +256,6 @@ assertHighest(X1,Y1,Ori1,Len1,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
 	Len = Len2,
 	Cons = Cons2
 .
-
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
