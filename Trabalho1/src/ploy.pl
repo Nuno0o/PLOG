@@ -90,7 +90,7 @@ chooseRotate(Board, X, Y, NewBoard):-
 .
 
 chooseMove(Board, X, Y, NewBoard,Xf,Yf):-
-	getPiece(X,Y,Board,Piece),
+	getPiece(X,Y,Board,_),
 	write('Orientation(n,s,w,e,nw,ne,sw,se): '),
 	read(InputOri),
 	write('Length(1-3): '),
@@ -105,7 +105,7 @@ chooseMove(Board, X, Y, NewBoard,Xf,Yf):-
 %bot_plays(+N,+Board,+Team,-NewBoard)
 bot_plays(N,Board,Team,NewBoard):-
 	nl,nl,
-	write('             '),write(Team),write(' team turn '),write(N),write(' (bot)'),nl,
+	write('         '),write(Team),write(' team turn '),write(N),write(' (bot)'),nl,
 	draw_board(Board),
 	difficulty(Dif),
 	bot_plays_diff(Dif,Board,Team,NewBoard)
@@ -121,34 +121,35 @@ bot_plays_diff(Dif,Board,Team,NewBoard):-
 	getPiece(X,Y,Board,Piece),
 	assertTeam(Piece,Team),
 	% MoveOrRotate = 0 -> roda, 1-3 -> move
-	random(0,3,MoveOrRotate),
-	moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard),
+	random(0,4,MoveOrRotate),
+	moveOrRotate(MoveOrRotate,Board,X,Y,Piece,NewBoard),
 	!
 .
 %getRandomXY(-X,-Y)
 getRandomXY(X,Y):-
-	random(0,8,X),
-	random(0,8,Y)
+	random(0,9,X),
+	random(0,9,Y)
 .
 %getRandomOriAndLength(+Piece,-Orientation,-Length)
 getRandomOriAndLength([_|[Orientations|_]],Orientation,Length):-
 	random_member(Orientation,Orientations),
 	length(Orientations,L),
-	random(1,L,Length)
+	L1 is L+1,
+	random(1,L1,Length)
 .
 %move
-moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
+moveOrRotate(MoveOrRotate,Board,X,Y,Piece,NewBoard):-
 	between(1,3,MoveOrRotate),
 	getRandomOriAndLength(Piece,Orientation,Length),
 	movePiece(X,Y,Orientation,Length,Board,NewBoard,_)
 .
 %rotate
-moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
+moveOrRotate(MoveOrRotate,Board,X,Y,Piece,NewBoard):-
 	MoveOrRotate = 0,
 	%% É feito um movimento para um tabuleiro nao usado para que a probabilidade de rotate falhar seja igual à de move falhar
 	getRandomOriAndLength(Piece,Orientation,Length),
 	movePiece(X,Y,Orientation,Length,Board,_,_),
-	random(0,1,Angle),
+	random(0,2,Angle),
 	rotatePiece(Piece,Angle,NewPiece),
 	setPiece(X,Y,Board,NewBoard,NewPiece)
 .
@@ -156,21 +157,21 @@ moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%modo ganancioso
+% modo ganancioso
 bot_plays_diff(Dif,Board,Team,NewBoard):-
 	Dif = 1,
 	findGreedyPlay(Board,Team,X,Y,Orientation,Length,Consumed),
 	moveOrRandom(Board,Team,X,Y,Orientation,Length,Consumed,NewBoard)
 .
 
-moveOrRandom(Board,Team,X,Y,Orientation,Length,Consumed,NewBoard):-
+moveOrRandom(Board,Team,_,_,_,_,Consumed,NewBoard):-
 	% Se nao for encontrada nenhuma jogada que resulte em capturar uma peça inimiga, e realizada uma jogada aleatoria
 	(Consumed = 0 ; Consumed = -1),
 	bot_plays_diff(0,Board,Team,NewBoard).
 
-	moveOrRandom(Board,Team,X,Y,Orientation,Length,Consumed,NewBoard):-
-		Consumed > 0,
-		movePiece(X,Y,Orientation,Length,Board,NewBoard,_).
+moveOrRandom(Board,_,X,Y,Orientation,Length,Consumed,NewBoard):-
+	Consumed > 0,
+	movePiece(X,Y,Orientation,Length,Board,NewBoard,_).
 
 
 %findGreedyPlay(+Board,+Team,-X,-Y,-Orientation,-Length,-Consumed)
@@ -179,7 +180,7 @@ findGreedyPlay(Board,Team,X,Y,Orientation,Length,Consumed):-
 
 %% Iterate though Ys
 
-findGreedyPlay_Y(CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
+findGreedyPlay_Y(CurrY,_,_,_,_,_,_,Consumed):-
 	CurrY = 9,
 	Consumed = -1.
 
@@ -192,7 +193,7 @@ findGreedyPlay_Y(CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
 
 %% Iterate though Xs
 
-findGreedyPlay_X(CurrX,CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
+findGreedyPlay_X(CurrX,_,_,_,_,_,_,_,Consumed):-
 	CurrX = 9,
 	Consumed = -1.
 
@@ -224,7 +225,7 @@ findGreedyPlay_Ori(CurrX,CurrY,[CurrOri|Rest],MaxLength,Board,Team,X,Y,Orientati
 
 %% Iterate though Lenghts
 
-findGreedyPlay_Len(CurrX,CurrY,CurrOri,CurrLength,MaxLength,Board,Team,X,Y,Orientation,Length,Consumed):-
+findGreedyPlay_Len(_,_,_,CurrLength,MaxLength,_,_,_,_,_,_,Consumed):-
 	CurrLength > MaxLength,
 	Consumed = -1.
 
@@ -239,7 +240,7 @@ findGreedyPlay_Len(CurrX,CurrY,CurrOri,CurrLength,MaxLength,Board,Team,X,Y,Orien
 
 %% Assert play with higher Consumed value
 
-assertHighest(X1,Y1,Ori1,Len1,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
+assertHighest(X1,Y1,Ori1,Len1,Cons1,_,_,_,_,Cons2,X,Y,Ori,Len,Cons):-
 	Cons1 >= Cons2,
 	X = X1,
 	Y = Y1,
@@ -248,7 +249,7 @@ assertHighest(X1,Y1,Ori1,Len1,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
 	Cons = Cons1
 .
 
-assertHighest(X1,Y1,Ori1,Len1,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
+assertHighest(_,_,_,_,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
 	Cons1 < Cons2,
 	X = X2,
 	Y = Y2,
@@ -273,7 +274,7 @@ rotatePiece(Piece,Orientation,PieceNova):-
 between(0,1,Orientation),
 rotatePiece_aux(Piece,Orientation,PieceNova).
 
-rotatePiece_aux([Team|[Sides|Rest]],Orientation,[Team|[NewSides|Rest2]]):-
+rotatePiece_aux([Team|[Sides|_]],Orientation,[Team|[NewSides|_]]):-
 	rotatePiece_aux2(Orientation,Sides,NewSides).
 
 rotatePiece_aux2(_,[],[]).
@@ -315,19 +316,19 @@ getPiece(X,Y,Board,Piece):-
 	getPiece_aux(0,X,Y,Board,Piece).
 
 getPiece_aux(_,_,_,[],_).
-getPiece_aux(Y,X,Y,[CurrLine|Rest],Piece):-
+getPiece_aux(Y,X,Y,[CurrLine|_],Piece):-
 	getPiece_aux2(0,X,Y,CurrLine,Piece).
 
-getPiece_aux(N,X,Y,[CurrLine|Rest],Piece):-
+getPiece_aux(N,X,Y,[_|Rest],Piece):-
 	N \= Y,
 	Y1 is N + 1,
 	getPiece_aux(Y1,X,Y,Rest,Piece).
 
 getPiece_aux2(_,_,_,[],_).
-getPiece_aux2(X,X,Y,[CurrPiece|Rest],Piece):-
+getPiece_aux2(X,X,_,[CurrPiece|_],Piece):-
 	Piece = CurrPiece.
 
-getPiece_aux2(N,X,Y,[CurrLine|Rest],Piece):-
+getPiece_aux2(N,X,Y,[_|Rest],Piece):-
 	N \= X,
 	X1 is N + 1,
 	getPiece_aux2(X1,X,Y,Rest,Piece).
@@ -345,7 +346,7 @@ setPiece_aux(X,Y,[CurrLine|Rest],[CurrLine2|Rest2],Piece):-
 	setPiece_aux(X,Y1,Rest,Rest2,Piece).
 
 setPiece_aux2(_,_,[],[],_).
-setPiece_aux2(X,Y,[CurrPiece|Rest],[CurrPiece2|Rest2],Piece):-
+setPiece_aux2(X,Y,[_|Rest],[CurrPiece2|Rest2],Piece):-
 	X = 0, Y = 0,
 	CurrPiece2 = Piece,
 	X1 is X-1,
