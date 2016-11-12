@@ -121,7 +121,7 @@ bot_plays_diff(Dif,Board,Team,NewBoard):-
 	getPiece(X,Y,Board,Piece),
 	assertTeam(Piece,Team),
 	% MoveOrRotate = 0 -> roda, 1-3 -> move
-	random(0,4,MoveOrRotate),
+	random(0,4,MoveOrRotate), 
 	moveOrRotate(MoveOrRotate,Board,X,Y,Piece,NewBoard),
 	!
 .
