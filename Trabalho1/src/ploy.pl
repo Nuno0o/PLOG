@@ -54,7 +54,7 @@ human_plays(Board,Team,NewBoard):-
 	(
 	(Rotate = 1 , Move = 0) -> chooseRotate(Board, X, Y, NewBoard);
 	(Rotate = 0 , Move = 1) -> chooseMove(Board, X, Y, NewBoard);
-	(Rotate = 1 , Move = 1) -> (chooseRotate(Board, X, Y, IntBoard),chooseMove(IntBoard, X, Y, NewBoard));
+	(Rotate = 1 , Move = 1) -> (chooseMove(Board, X, Y, IntBoard),chooseRotate(IntBoard, X, Y, NewBoard));
 	true
 	),
 	!
@@ -155,10 +155,74 @@ moveOrRotate(MoveOrRotate,Board,Team,X,Y,Piece,NewBoard):-
 %modo ganancioso
 bot_plays_diff(Dif,Board,Team,NewBoard):-
 	Dif = 1,
-	findGreedyPlay(Board,X,Y,Orientation,Length,Consumed)
+	findGreedyPlay(Board,Team,X,Y,Orientation,Length,Consumed)
 .
-%findGreedyPlay(+Board,-X,-Y,-Orientation,-Length,-Consumed)
-findGreedyPlay(Board,X,Y,Orientation,Length,Board,Consumed).
+%findGreedyPlay(+Board,+Team,-X,-Y,-Orientation,-Length,-Consumed)
+findGreedyPlay(Board,Team,X,Y,Orientation,Length,Consumed):-
+	findGreedyPlay_Y(0,Board,Team,X,Y,Orientation,Length,Consumed).
+
+findGreedyPlay_Y(CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
+	Consumed = -1,
+	CurrY = 9.
+
+findGreedyPlay_Y(CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
+	CurrY \= 9,
+	findGreedyPlay_X(0,CurrY,Board,Team,X,Y,Orientation,Length,Consumed),
+	CurrY1 is CurrY+1,
+	findGreedyPlay_Y(CurryY1,Board,Team,X,Y,Orientation,Length,BConsumed).
+
+findGreedyPlay_X(CurrX,CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
+	Consumed = -1,
+	CurrX = 9.
+
+findGreedyPlay_X(CurrX,CurrY,Board,Team,X,Y,Orientation,Length,Consumed):-
+	CurrX \= 9,
+	getPiece(CurrX,CurrY,Board,[Team|[Ori|_]]),
+	findGreedyPlay_Ori(CurrX,CurrY,Ori,Board,Team,X,Y,Orientation,Length,Consumed)
+	CurrX1 is CurrX+1,
+	findGreedyPlay_X(CurrX1,CurrY,Board,Team,X,Y,Orientation,Length,Consumed).
+
+findGreedyPlay_Ori(_,_,[],_,_,_,_,_,_,_,Consumed):-
+	Consumed = -1.
+
+findGreedyPlay_Ori(CurrX,CurrY,[CurrOri|Rest],Board,Team,X,Y,Orientation,Length,Consumed):-
+	length(Rest,Length1),
+	MaxLength is Length1+1,
+	findGreedyPlay_Len(MaxLength,Board,Team,X,Y,Orientation,Length,Consumed),
+	findGreedyPlay_Ori(CurrX,CurrY,Rest,Board,Team,X,Y,Orientation,Length,Consumed).
+
+findGreedyPlay_Len(MaxLength,Board,Team,X,Y,Orientation,Length,Consumed):-
+	Consumed = -1,
+	Length is MaxLength + 1.
+
+findGreedyPlay_Len(MaxLength,Board,Team,X,Y,Orientation,Length,Consumed):-
+	Length =< MaxLength,
+	nDirections(Length,Len).
+	movePiece(X,Y,Orientation,Len,Board,_,Consumed),
+	Length1 is Length+1,
+	findGreedyPlay_len(MaxLength,Board,Team,X,Y,Orientation,Length1,Board,Consumed).
+
+assertHighest(X1,Y1,Ori1,Len1,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
+	Cons1 >= Cons2,
+	X = X1,
+	Y = Y1,
+	Ori = Ori1,
+	Len = Len1,
+	Cons = Cons1
+.
+
+assertHighest(X1,Y1,Ori1,Len1,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
+	Cons1 < Cons2,
+	X = X2,
+	Y = Y2,
+	Ori = Ori2,
+	Len = Len2,
+	Cons = Cons2
+.
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
