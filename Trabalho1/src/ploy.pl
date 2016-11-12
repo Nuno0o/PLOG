@@ -20,7 +20,10 @@ play:-
 playCycle(N,Team,Board):-
 player_plays(N,Board,Team,NewBoard),
 (Team = 'green' -> NextN is N+1 ; NextN is N),
-(assertGameEnded(NewBoard,WinnerTeam) -> endGame(WinnerTeam); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard))).
+(assertGameEnded(NewBoard,WinnerTeam) -> endGame(WinnerTeam,NewBoard); (switchTeam(Team,NextTeam),playCycle(NextN,NextTeam,NewBoard)))
+.
+
+
 
 assertTeam([Team|_],Team).
 
@@ -121,7 +124,7 @@ bot_plays_diff(Dif,Board,Team,NewBoard):-
 	getPiece(X,Y,Board,Piece),
 	assertTeam(Piece,Team),
 	% MoveOrRotate = 0 -> roda, 1-3 -> move
-	random(0,4,MoveOrRotate), 
+	random(0,4,MoveOrRotate),
 	moveOrRotate(MoveOrRotate,Board,X,Y,Piece,NewBoard),
 	!
 .
@@ -261,9 +264,9 @@ assertHighest(_,_,_,_,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%endGame(+WinnerTeam)
-endGame(WinnerTeam):-
-	nl,nl,write(WinnerTeam), write(' won the game!').
+%endGame(+WinnerTeam,+Board)
+endGame(WinnerTeam,Board):-
+	nl,nl,write('        '),write(WinnerTeam), write(' won the game!'),draw_board(Board),!.
 
 
 %%%%%%%%%%% ROTAÇAO DE PEÇA %%%%%%%%%%%%%%%

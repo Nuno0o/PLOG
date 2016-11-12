@@ -6,7 +6,7 @@ menu:-
 	(
 	Input = 1 -> mode;
 	Input = 2 -> help;
-	Input = 3 -> false;
+	Input = 3 -> halt;
 	true
 	),
 	menu
