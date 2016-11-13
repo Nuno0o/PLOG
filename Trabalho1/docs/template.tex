@@ -96,13 +96,24 @@ Descrever o projeto e implementação da lógica do jogo em Prolog, incluindo a 
 
 \subsection{Lista de Jogadas Válidas} Obtenção de uma lista de jogadas possíveis. Exemplo: \textit{valid\_moves(+Board, -ListOfMoves)}.
 
-\subsection{Execução de Jogadas} Validação e execução de uma jogada num tabuleiro, obtendo o novo estado do jogo. Exemplo: \textit{move(+Move, +Board, -NewBoard)}.
+\subsection{Execução de Jogadas} A realização de jogadas são feitas através dos predicados \textit{movePiece(+X,+Y,+Orientation,+Length,+Board,-NewBoard,-Consumed)} ou \textit{rotatePiece(Piece,Orientation,PieceNova)} em conjunto com \textit{setPiece(+X,+Y,+Board,-NewBoard,+Piece)}, dependendo se o utilizador deseja mover a peça ou rodá-la.
+No predicado que realiza movimento da peça, X e Y representam as coordenadas da pela, Orientation a direção em que a peça se deve mover, Length a distancia que deve percorrer, e Board o estado de jogo atual.
+Os retornos deste predicado são um novo estado de jogo NewBoard e o nº de direções da peça consumida(0 se nao foi consumida nenhuma).
+Neste predicado, são efetuadas várias verificações se o movimento da peça é possível, nomeadamente:\\Se a Orientation está presente na peça (\textit{assertHasOrientation(Orientation,Piece)}) ;\\Se a distância é possível (\textit{assertValidLength(Length,Piece)}) ;\\Se o destino está dentro do tabuleiro (\textit{assertInsideBoundaries(Xf,Yf)});\\Se todas as casas até ao destino estão vazias, e se o destino ou está vazio ou contem um inimigo (\textit{assertNoCollision(X,Y,Orientation,Length,Board)}).\\
+A rotação de uma peça é efetuada através de \textit{rotatePiece} e \textit{setPiece}, não sendo necessárias nenhumas verificações, pois a rotação de uma peça nunca pode falhar.
 
 \subsection{Avaliação do Tabuleiro} Avaliação do estado do jogo, que permitirá comparar a aplicação das diversas jogadas disponíveis. Exemplo: \textit{value(+Board, +Player, -Value)}.
 
-\subsection{Final do Jogo} Verificação do fim do jogo, com identificação do vencedor. Exemplo: \textit{game\_over(+Board, -Winner)}.
+\subsection{Final do Jogo} A verificação do final do jogo é feita através do predicado \textit{assertGameEnded(+Board,-Winner)}.\\
+Neste predicado, Board representa o estado de jogo atual, e Winner refere a equipa vitoriosa caso o predicado seja verdadeiro.
+Por sua vez , este predicado chamará outros 2 predicados para cada equipa, \textit{assertCommanderDead(+Board,+Team)} e \textit{assertAllSmallDead(+Board,+Team)}, que testam as duas condições de terminação de jogo, que são, respetivamente, quando o Commander de uma das equipas é capturado ou quando todas as peças excepto o Commander de uma equipa são capturadas.
 
-\subsection{Jogada do Computador} Escolha da jogada a efetuar pelo computador, dependendo do nível de dificuldade. Por exemplo: \textit{choose\_move(+Level, +Board, -Move)}.
+\subsection{Jogada do Computador} A escolha da jogada pelo bot é feita através do predicado \textit{bot\_plays\_diff(+Dif,+Board,+Team,-NewBoard)}. \\
+Neste predicado, Dif representa a dificuldade do bot, Board é o estado de jogo atual, Team a equipa do bot e NewBoard o novo estado de jogo depois de efetuada a jogada. \\
+Dif pode tomar 2 valores possíveis, podendo estes ser 0(bot aleatório) e 1(bot ganancioso).
+O bot aleatório fará sempre jogadas completamente aleatórias,enquanto que o bot ganancioso procurará recursivamente qual a melhor jogada a fazer nesse mesmo turno, sendo o factor a maximizar a peça inimiga capturada(quantas mais direçoes tiver a peça, maior a prioridade).
+Assim, uma peça com 4 direções tem prioridade sobre uma de 3, esta tem prioridade sobre uma de 2, e a de 2 tem prioridade sobre a de 1.Se não for encontrada nenhuma jogada que resulte na captura de uma peça, o bot ganancioso chama o predicado do bot aleatório, ou seja, com Dif = 0.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
