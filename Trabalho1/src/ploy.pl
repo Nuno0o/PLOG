@@ -78,18 +78,17 @@ human_plays(N,Board,Team,NewBoard):-
 
 getXY(X,Y):-
 	write('X - '),
-	read(Input),
+	getInt(Input),
 	X = Input,
-	get_char(_),
 	write('Y - '),
-	read(Input2),
+	getInt(Input2),
 	Y = Input2
 .
 
 chooseOptions([_|[Orientations|_]],Move,Rotate):-
 	length(Orientations,Length),
-	(Length = 1 -> write('Move(1) Rotate(2) Both(3)\n'); write('Move(1) Rotate(2)\n')),
-	read(Input),
+	(Length = 1 -> write('Move(1) Rotate(2) Both(3): '); write('Move(1) Rotate(2): ')),
+	getInt(Input),
 	(
 	Input = 1 -> (Move = 1,Rotate = 0);
 	Input = 2 -> (Move = 0,Rotate = 1);
@@ -101,7 +100,7 @@ chooseOptions([_|[Orientations|_]],Move,Rotate):-
 chooseRotate(Board, X, Y, NewBoard):-
 	getPiece(X,Y,Board,Piece),
 	write('(1)Clockwise (2)CounterClockwise: '),
-	read(Input),
+	getInt(Input),
 	Angle is Input-1,
 	rotatePiece(Piece,Angle,NewPiece),setPiece(X,Y,Board,NewBoard,NewPiece),
 	!
@@ -110,9 +109,9 @@ chooseRotate(Board, X, Y, NewBoard):-
 chooseMove(Board, X, Y, NewBoard,Xf,Yf):-
 	getPiece(X,Y,Board,_),
 	write('Orientation(n,s,w,e,nw,ne,sw,se): '),
-	read(InputOri),
+	getChar(InputOri),
 	write('Length(1-3): '),
-	read(InputLen),
+	getInt(InputLen),
 	Length = InputLen,
 	movePiece(X,Y,InputOri,Length,Board,NewBoard,_),
 	calcEndPoint(X,Y,InputOri,Length,Xf,Yf),

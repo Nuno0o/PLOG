@@ -1,6 +1,15 @@
+getChar(Input):-
+	get_char(Input),
+	get_char(_).
+
+getInt(Input):-
+	getChar(Input1),
+	char_code(Input1,Code),
+	Input is Code - 48.
+
 menu:-
 	print_menu,
-	read(Input),
+	getInt(Input),
 	(
 	Input = 1 -> mode;
 	Input = 2 -> help;
@@ -24,7 +33,7 @@ mode:-
 	print_play,
 	abolish(jogador/2),
 	abolish(difficulty/1),
-	read(Input),
+	getInt(Input),
 	(
 	Input = 1 -> vs_player;
 	Input = 2 -> vs_bot;
@@ -54,7 +63,7 @@ vs_player:-
 vs_bot:-
 	repeat,nl,
 	write('Insert bot difficulty(0 - random, 1 - greedy): '),nl,
-	read(Difficulty),
+	getInt(Difficulty),
 	availlableDifficulty(Difficulty),
 	assert(difficulty(Difficulty)),
 	!,
@@ -65,7 +74,7 @@ vs_bot:-
 vs_bot_bot:-
 	repeat,nl,
 	write('Insert bot difficulty(0 - random, 1 - greedy): '),nl,
-	read(Difficulty),
+	getInt(Difficulty),
 	availlableDifficulty(Difficulty),
 	assert(difficulty(Difficulty)),
 	!,
