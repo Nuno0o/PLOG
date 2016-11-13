@@ -24,9 +24,6 @@ player_plays(N,Board,Team,NewBoard),
 .
 
 
-
-assertTeam([Team|_],Team).
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %switchTeam(+Team,-NextTeam)
@@ -37,6 +34,13 @@ switchTeam(Team,NextTeam):-
 switchTeam(Team,NextTeam):-
 	Team = 'red',NextTeam = 'green'.
 
+%assertTeam(+Piece,+Team).
+assertTeam([Team|_],Team).
+
+
+%endGame(+WinnerTeam,+Board)
+endGame(WinnerTeam,Board):-
+	nl,nl,write('        '),write(WinnerTeam), write(' won the game!'),nl,draw_board(Board),!.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -270,12 +274,6 @@ assertHighest(_,_,_,_,Cons1,X2,Y2,Ori2,Len2,Cons2,X,Y,Ori,Len,Cons):-
 	Cons = Cons2
 .
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%endGame(+WinnerTeam,+Board)
-endGame(WinnerTeam,Board):-
-	nl,nl,write('        '),write(WinnerTeam), write(' won the game!'),draw_board(Board),!.
 
 
 %%%%%%%%%%% ROTAÇAO DE PEÇA %%%%%%%%%%%%%%%

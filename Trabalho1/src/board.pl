@@ -100,7 +100,7 @@ draw_line3sq3([]).
 draw_line3sq3([_|[SIDES|_]]):-
 	draw_orientation_symbol('se',SIDES).
 
-draw_straightLine:-write('---------------------------------------').
+draw_straightLine:-write('--------------------------------------').
 
 orientationSymbol('n','|').
 orientationSymbol('s','|').
