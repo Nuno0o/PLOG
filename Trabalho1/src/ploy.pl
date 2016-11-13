@@ -31,16 +31,25 @@ assertTeam([Team|_],Team).
 
 %switchTeam(+Team,-NextTeam)
 switchTeam(Team,NextTeam):-
-(
-  Team = 'red' -> NextTeam = 'green'; NextTeam = 'red'
-).
+  Team = 'green' , NextTeam = 'red'.
+
+
+switchTeam(Team,NextTeam):-
+	Team = 'red',NextTeam = 'green'.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %player_plays(+N,+Board,+Team,-NewBoard)
 player_plays(N,Board,Team,NewBoard):-
 	jogador(Team,HumanOrBot),
-	(HumanOrBot = 'human' -> human_plays(N,Board,Team,NewBoard) ; bot_plays(N,Board,Team,NewBoard)).
+	HumanOrBot = 'human',
+	human_plays(N,Board,Team,NewBoard).
+
+player_plays(N,Board,Team,NewBoard):-
+	jogador(Team,HumanOrBot),
+	HumanOrBot = 'bot',
+	bot_plays(N,Board,Team,NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -380,7 +389,7 @@ assertCanMove(Piece,X,Y,Xf,Yf,Orientation,Length,Board):-
 assertHasOrientation(Orientation,Piece),
 assertValidLength(Length,Piece),
 assertInsideBoundaries(Xf,Yf),
-assertNoColision(X,Y,Orientation,Length,Board).
+assertNoCollision(X,Y,Orientation,Length,Board).
 
 assertHasOrientation(Orientation,Piece):-
 assertHasOrientation_aux(Orientation,Piece).
@@ -433,22 +442,26 @@ multiplierY(Orientation,MultY),
 Xf is X + Length*MultX,
 Yf is Y + Length*MultY.
 
-assertNoColision(X,Y,Orientation,Length,Board):-
+assertNoCollision(X,Y,Orientation,Length,Board):-
 calcEndPoint(X,Y,Orientation,Length,Xf,Yf),
 getPiece(X,Y,Board,Piece1),
 getPiece(Xf,Yf,Board,Piece2),
 assertDifferentTeam(Piece1,Piece2),
 Length1 is Length - 1,
-(Length > 1 -> assertNoColision_inter(X,Y,Orientation,Length1,Board) ; true).
+assertNoCollision_inter(X,Y,Orientation,Length1,Board).
 
-assertNoColision_inter(X,Y,Orientation,Length,Board):-
-Length > 0 ->(
+
+assertNoCollision_inter(X,Y,Orientation,Length,Board):-
+	Length > 0,
 	calcEndPoint(X,Y,Orientation,Length,Xf,Yf),
 	getPiece(Xf,Yf,Board,Piece),
 	assertEmpty(Piece),
 	Length1 is Length - 1,
-	assertNoColision_inter(X,Y,Orientation,Length1,Board)
-); true.
+	assertNoCollision_inter(X,Y,Orientation,Length1,Board).
+
+assertNoCollision_inter(_,_,_,Length,_):-
+	Length =< 0,
+	true.
 
 assertEmpty([Team|_]):-
 Team == 'empty'.
@@ -458,40 +471,74 @@ Team1 \= Team2.
 
 %%%%%%%%%%%%% VERIFICA SE JOGO ACABOU %%%%%%%%%%%%%%%
 
-%assertGameEnded(+Board,-Team)
-assertGameEnded(Board,Team):-
-(assertCommanderDead(Board,'red')-> Team = 'green';
-assertCommanderDead(Board,'green')-> Team = 'red';
-assertAllSmallDead(Board,'red')-> Team = 'green';
-assertAllSmallDead(Board,'green')-> Team = 'red';
+%assertGameEnded(+Board,-Winner)
+assertGameEnded(Board,Winner):-
+(assertCommanderDead(Board,'red')-> Winner = 'green';
+assertCommanderDead(Board,'green')-> Winner = 'red';
+assertAllSmallDead(Board,'red')-> Winner = 'green';
+assertAllSmallDead(Board,'green')-> Winner = 'red';
 false).
 
 assertCommanderDead(Board,Team):-
 assertCommanderDead_aux(Board,Team,0).
 
+assertCommanderDead_aux(_,_,Y):-
+	Y = 9,
+	true.
 assertCommanderDead_aux(Board,Team,Y):-
-assertCommanderDead_aux2(Board,Team,0,Y),
-Y1 is Y+1,
-(Y < 8 -> assertCommanderDead_aux(Board,Team,Y1);true).
+	Y < 9,
+	assertCommanderDead_aux2(Board,Team,0,Y),
+	Y1 is Y + 1,
+	assertCommanderDead_aux(Board,Team,Y1).
 
+assertCommanderDead_aux2(_,_,X,_):-
+	X = 9,
+	true.
 assertCommanderDead_aux2(Board,Team,X,Y):-
-getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
-length(Orientations,Length),
-(Team = TeamO -> Length \= 4; true),
-X1 is X+1,
-(X < 8 -> assertCommanderDead_aux2(Board,Team,X1,Y);true).
+	X < 9,
+	getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
+	length(Orientations,Length),
+	assertNotCommander(Team,TeamO,Length),
+	X1 is X+1,
+	assertCommanderDead_aux2(Board,Team,X1,Y).
+
+assertNotCommander(Team,TeamO,_):-
+	Team \= TeamO,
+	true.
+
+assertNotCommander(Team,TeamO,Length):-
+	Team = TeamO,
+	Length \= 4.
 
 assertAllSmallDead(Board,Team):-
-assertAllSmallDead_aux(Board,Team,0).
+	assertAllSmallDead_aux(Board,Team,0).
+
+assertAllSmallDead_aux(_,_,Y):-
+	Y = 9,
+	true.
 
 assertAllSmallDead_aux(Board,Team,Y):-
-assertAllSmallDead_aux2(Board,Team,0,Y),
-Y1 is Y+1,
-(Y < 8 -> assertAllSmallDead_aux(Board,Team,Y1);true).
+	Y < 9,
+	assertAllSmallDead_aux2(Board,Team,0,Y),
+	Y1 is Y+1,
+	assertAllSmallDead_aux(Board,Team,Y1).
+
+assertAllSmallDead_aux2(_,_,X,_):-
+	X = 9,
+	true.
 
 assertAllSmallDead_aux2(Board,Team,X,Y):-
-getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
-length(Orientations,Length),
-(Team = TeamO -> Length == 4; true),
-X1 is X+1,
-(X < 8 -> assertAllSmallDead_aux2(Board,Team,X1,Y);true).
+	X < 9,
+	getPiece(X,Y,Board,[TeamO|[Orientations|_]]),
+	length(Orientations,Length),
+	assertIsCommander(Team,TeamO,Length),
+	X1 is X+1,
+	assertAllSmallDead_aux2(Board,Team,X1,Y).
+
+assertIsCommander(Team,TeamO,_):-
+	Team \= TeamO,
+	true.
+
+assertIsCommander(Team,TeamO,Length):-
+	Team = TeamO,
+	Length = 4.

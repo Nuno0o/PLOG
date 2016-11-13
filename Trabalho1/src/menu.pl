@@ -1,6 +1,4 @@
 menu:-
-	abolish(jogador/2),
-	abolish(difficulty/1),
 	print_menu,
 	read(Input),
 	(
@@ -24,6 +22,8 @@ print_menu:-
 
 mode:-
 	print_play,
+	abolish(jogador/2),
+	abolish(difficulty/1),
 	read(Input),
 	(
 	Input = 1 -> vs_player;
