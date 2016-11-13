@@ -1,4 +1,4 @@
-board1([
+board([
 [['empty',[]],['green',['w','s','e']],['green',['s','ne','nw']],['green',['sw','s','se']],['green',['sw','se','ne','nw']],['green',['sw','se','s']],['green',['s','ne','nw']],['green',['w','s','e']],['empty',[]]],
 [['empty',[]],['empty',[]],['green',['s','se']],['green',['sw','se']],['green',['s','n']],['green',['sw','se']],['green',['sw','s']],['empty',[]],['empty',[]]],
 [['empty',[]],['empty',[]],['empty',[]],['green',['s']],['green',['s']],['green',['s']],['empty',[]],['empty',[]],['empty',[]]],
@@ -9,27 +9,7 @@ board1([
 [['empty',[]],['empty',[]],['red',['n','ne']],['red',['nw','ne']],['red',['s','n']],['red',['nw','ne']],['red',['nw','n']],['empty',[]],['empty',[]]],
 [['empty',[]],['red',['w','n','e']],['red',['n','se','sw']],['red',['nw','n','ne']],['red',['sw','se','ne','nw']],['red',['nw','ne','n']],['red',['n','se','sw']],['red',['w','n','e']],['empty',[]]]]).
 
-board([[[empty,[]],[empty,[]],[green,[s,ne,nw]],[empty,[]],[green,[sw,se,ne,nw]],[green,[w,s,sw]|_749],[green,[sw,e,n]|_803],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[green,[w,s]|_1019],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[green,[s]],[green,[s,n]],[green,[s]],[empty,[]],[empty,[]],[green,[w,s,e]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[green,[sw,se]],[empty,[]],[empty,[]],[empty,[]]],
-[[green,[nw,w,sw]|_989],[green,[w,s,e]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[red,[e,s]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[red,[n]],[red,[n]],[empty,[]],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[red,[s,n]],[empty,[]],[empty,[]],[empty,[]],[empty,[]]],
-[[red,[s,w]|_1085],[red,[w,n,e]],[red,[n,se,sw]],[green,[sw,s]|_921],[red,[sw,se,ne,nw]],[red,[nw,ne,n]],[red,[n,se,sw]],[red,[w,n,e]],[empty,[]]]]).
-
-board2([[[empty,[]],[empty,[]],[green,[s,ne,nw]],[empty,[]],[green,[sw,se,ne,nw]],[green,[w,s,sw]|_2797],[green,[sw,e,n]|_2821],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[green,[w,s]|_2909],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[green,[s]],[green,[s,n]],[green,[s]],[empty,[]],[empty,[]],[green,[w,s,e]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[green,[sw,se]],[empty,[]],[empty,[]],[empty,[]]],
-[[green,[nw,w,sw]|_3253],[green,[w,s,e]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[red,[e,s]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[red,[n]],[red,[n]],[empty,[]],[empty,[]],[empty,[]]],
-[[empty,[]],[empty,[]],[empty,[]],[empty,[]],[red,[s,n]],[empty,[]],[empty,[]],[empty,[]],[empty,[]]],
-[[red,[s,w]|_3749],[red,[w,n,e]],[red,[n,se,sw]],[green,[sw,s]|_3817],[red,[sw,se,ne,nw]],[red,[nw,ne,n]],[red,[n,se,sw]],[red,[w,n,e]],[empty,[]]]]).
-
-boardFinal([
+boardFinalExample([
 [['empty',[]],['empty',[]],['empty',[]],['green',['sw','se','ne','nw']],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
 [['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
 [['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]],['empty',[]]],
@@ -70,15 +50,15 @@ draw_line1([SQUARE|REST]):-
 
 draw_line1sq1([]).
 draw_line1sq1([_|[SIDES|_]]):-
-	member('nw',SIDES) -> write('\\'); write(' ').
+	draw_orientation_symbol('nw',SIDES).
 
 draw_line1sq2([]).
 draw_line1sq2([_|[SIDES|_]]):-
-	member('n',SIDES) -> write('|'); write(' ').
+	draw_orientation_symbol('n',SIDES).
 
 draw_line1sq3([]).
 draw_line1sq3([_|[SIDES|_]]):-
-	member('ne',SIDES) -> write('/'); write(' ').
+	draw_orientation_symbol('ne',SIDES).
 
 draw_line2([]).
 draw_line2([SQUARE|REST]):-
@@ -90,16 +70,15 @@ draw_line2([SQUARE|REST]):-
 
 draw_line2sq1([]).
 draw_line2sq1([_|[SIDES|_]]):-
-	member('w',SIDES) -> write('-'); write(' ').
+	draw_orientation_symbol('w',SIDES).
 
 draw_line2sq2([]).
 draw_line2sq2([TEAM|[_|_]]):-
-	=(TEAM,'green') -> write('G');
-	=(TEAM,'red') -> write('R') ; write(' ').
+	draw_team_symbol(TEAM).
 
 draw_line2sq3([]).
 draw_line2sq3([_|[SIDES|_]]):-
-	member('e',SIDES) -> write('-'); write(' ').
+	draw_orientation_symbol('e',SIDES).
 
 draw_line3([]).
 draw_line3([SQUARE|REST]):-
@@ -111,14 +90,46 @@ draw_line3([SQUARE|REST]):-
 
 draw_line3sq1([]).
 draw_line3sq1([_|[SIDES|_]]):-
-	member('sw',SIDES) -> write('/'); write(' ').
+	draw_orientation_symbol('sw',SIDES).
 
 draw_line3sq2([]).
 draw_line3sq2([_|[SIDES|_]]):-
-	member('s',SIDES) -> write('|'); write(' ').
+	draw_orientation_symbol('s',SIDES).
 
 draw_line3sq3([]).
 draw_line3sq3([_|[SIDES|_]]):-
-	member('se',SIDES) -> write('\\'); write(' ').
+	draw_orientation_symbol('se',SIDES).
 
 draw_straightLine:-write('---------------------------------------').
+
+orientationSymbol('n','|').
+orientationSymbol('s','|').
+orientationSymbol('w','-').
+orientationSymbol('e','-').
+orientationSymbol('nw','\\').
+orientationSymbol('ne','/').
+orientationSymbol('sw','/').
+orientationSymbol('se','\\').
+teamSymbol('red','R').
+teamSymbol('green','G').
+
+draw_orientation_symbol(Ori,Sides):-
+  \+ member(Ori,Sides),
+  write(' ').
+
+draw_orientation_symbol(Ori,Sides):-
+  member(Ori,Sides),
+  orientationSymbol(Ori,Symbol),
+  write(Symbol).
+
+draw_team_symbol(Team):-
+  Team = 'green',
+  write('G').
+
+draw_team_symbol(Team):-
+  Team = 'red',
+  write('R').
+
+draw_team_symbol(Team):-
+  Team \= 'red' , Team \= 'green',
+  write(' ').
