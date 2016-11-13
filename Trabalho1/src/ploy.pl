@@ -3,7 +3,6 @@
 :- use_module(library(random)).
 :- include('board.pl').
 :- include('menu.pl').
-:- include('util.pl').
 
 ploy:- menu.
 
