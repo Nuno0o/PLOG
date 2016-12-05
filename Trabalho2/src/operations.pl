@@ -145,5 +145,7 @@ solveGame(Board,Lines,Cols,Elems):-
     domain(Elems,0,1),
     shadeAllOnList(1,Elems,Board,NewBoard),
     allConditionsMet(Lines,Cols,NewBoard),
-    labeling([],Elems).
+    statistics(walltime,_),
+    labeling([],Elems),
+    fd_statistics.
     
