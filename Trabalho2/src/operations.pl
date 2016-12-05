@@ -4,7 +4,7 @@
 
 
 test:-cpave1(A),lineRest1(X),colRest1(Y),setAreaByNumber(1,A,B),setAreaByNumber(7,B,C),setAreaByNumber(9,C,D),setAreaByNumber(3,D,E),setAreaByNumber(4,E,F),setAreaByNumber(8,F,G),setAreaByNumber(11,G,H),allConditionsMet(X,Y,H).
-
+test2:-cpave1(A),lineRest1(X),colRest1(Y),solveGame(A,X,Y,Sol),write(Sol).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %getCoord(+X,+Y,+Board,-N)
@@ -31,11 +31,11 @@ setArea_aux([Line|Tail1],Item,[NewLine|Tail2]):-
 
 setArea_aux2([],_,[]).
 setArea_aux2([Item|Tail1],Item,[NewItem|Tail2]):-
-    NewItem is -Item,
+    NewItem #= -Item,
     setArea_aux2(Tail1,Item,Tail2).
 
 setArea_aux2([Item1|Tail1],Item,[Item1|Tail2]):-
-    Item1 \= Item,
+    Item1 #\= Item,
     setArea_aux2(Tail1,Item,Tail2).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,15 +73,15 @@ getShadedLine_aux(Size,_,Board,N,N):-
 
 getShadedLine_aux(X,Y,Board,N1,N):-
     getCoord(X,Y,Board,Elem),
-    Elem < 0,
-    N2 is N1+1,
-    X1 is X+1,
+    Elem #< 0,
+    N2 #= N1+1,
+    X1 #= X+1,
     getShadedLine_aux(X1,Y,Board,N2,N).
 
 getShadedLine_aux(X,Y,Board,N1,N):-
     getCoord(X,Y,Board,Elem),
-    Elem > 0,
-    X1 is X+1,
+    Elem #> 0,
+    X1 #= X+1,
     getShadedLine_aux(X1,Y,Board,N1,N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,15 +96,15 @@ getShadedCol_aux(_,Size,Board,N,N):-
 
 getShadedCol_aux(X,Y,Board,N1,N):-
     getCoord(X,Y,Board,Elem),
-    Elem < 0,
-    N2 is N1+1,
-    Y1 is Y+1,
+    Elem #< 0,
+    N2 #= N1+1,
+    Y1 #= Y+1,
     getShadedCol_aux(X,Y1,Board,N2,N).
 
 getShadedCol_aux(X,Y,Board,N1,N):-
     getCoord(X,Y,Board,Elem),
-    Elem > 0,
-    Y1 is Y+1,
+    Elem #> 0,
+    Y1 #= Y+1,
     getShadedCol_aux(X,Y1,Board,N1,N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,17 +129,21 @@ allColsMet([Col,N|Rest],Board):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-shadeAllOnList([],Board,Board).
-shadeAllOnList([Elem|List],Board,NewBoard):-
+shadeAllOnList(_,[],Board,Board).
+shadeAllOnList(Elem,[1|List],Board,NewBoard):-
     setAreaByNumber(Elem,Board,Board1),
-    shadeAllOnList(List,Board1,NewBoard).
+    NextElem #= Elem+1,
+    shadeAllOnList(NextElem,List,Board1,NewBoard).
+
+shadeAllOnList(Elem,[0|List],Board,NewBoard):-
+    NextElem #= Elem+1,
+    shadeAllOnList(NextElem,List,Board,NewBoard).
 
 solveGame(Board,Lines,Cols,Elems):-
     getBiggestN(Board,N),
-    SolLength #> 0,
-    SolLength #=< N,
-    length(Elems,SolLength),
-    domain(Elems,1,N),
-    shadeAllOnList(Elems,Board,NewBoard),
-    allConditionsMet(Lines,Cols,NewBoard).
+    length(Elems,N),
+    domain(Elems,0,1),
+    shadeAllOnList(1,Elems,Board,NewBoard),
+    allConditionsMet(Lines,Cols,NewBoard),
+    labeling([],Elems).
     
