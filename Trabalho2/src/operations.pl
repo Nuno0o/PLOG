@@ -3,6 +3,8 @@
 :- use_module(library(clpfd)).
 
 
+test:-cpave1(A),setAreaByNumber(1,A,B),setAreaByNumber(7,B,C),setAreaByNumber(9,C,D),setAreaByNumber(3,D,E),setAreaByNumber(4,E,F),setAreaByNumber(8,F,G),setAreaByNumber(11,G,H),allConditionsMet(H).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %getCoord(+X,+Y,+Board,-N)
@@ -35,6 +37,28 @@ setArea_aux2([Item|Tail1],Item,[NewItem|Tail2]):-
 setArea_aux2([Item1|Tail1],Item,[Item1|Tail2]):-
     Item1 \= Item,
     setArea_aux2(Tail1,Item,Tail2).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+max(N,N1,N):-
+    N1 =< N.
+
+max(N1,N,N):-
+    N1 < N.
+
+%getBiggestN(+Board,-N)
+getBiggestN([_,_|Board],N):-
+    getBiggestN_aux(Board,N).
+
+getBiggestN_aux([],0).
+getBiggestN_aux([Line|Rest],N):-
+    getBiggestN_aux2(Line,N1),
+    getBiggestN_aux(Rest,N2),
+    max(N1,N2,N).
+
+getBiggestN_aux2(Line,N):-
+    max_member(N,Line).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -86,21 +110,36 @@ getShadedCol_aux(X,Y,Board,N1,N):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %allConditionsMet(+Board).
-allConditionsMet(Board):-
-    allLinesMet(Board),
-    allColsMet(Board).
+allConditionsMet([Lines,Cols|Board]):-
+    allLinesMet(Lines,[Lines,Cols|Board]),
+    allColsMet(Cols,[Lines,Cols|Board]).
 
-allLinesMet([[],_,_]).
+allLinesMet([],_).
 
-allLinesMet([[Line,N|Rest],_,Board]):-
+allLinesMet([Line,N|Rest],Board):-
+    getShadedLine(Line,Board,N),
+    allLinesMet(Rest,Board).
 
-    getShadedLine(Line,[_,_,Board],N),
-    allLinesMet([Rest,_,Board]).
+allColsMet([],_).
 
-allColsMet([_,[],_]).
+allColsMet([Col,N|Rest],Board):-
 
-allColsMet([_,[Col,N|Rest],Board]):-
+    getShadedCol(Col,Board,N),
+    allColsMet(Rest,Board).
 
-    getShadedCol(Col,[_,_,Board],N),
-    allColsMet([_,Rest,Board]).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+shadeAllOnList([],Board,Board).
+shadeAllOnList([Elem|List],Board,NewBoard):-
+    setAreaByNumber(Elem,Board,Board1),
+    shadeAllOnList(List,Board1,NewBoard).
+
+solveGame(Board,Elems):-
+    getBiggestN(Board,N),
+    SolLength #> 0,
+    SolLength #=< N,
+    length(Elems,SolLength),
+    domain(Elems,1,N),
+    shadeAllOnList(Elems,Board,NewBoard),
+    allConditionsMet(NewBoard).
+    
