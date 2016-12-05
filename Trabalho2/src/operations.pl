@@ -3,24 +3,24 @@
 :- use_module(library(clpfd)).
 
 
-test:-cpave1(A),setAreaByNumber(1,A,B),setAreaByNumber(7,B,C),setAreaByNumber(9,C,D),setAreaByNumber(3,D,E),setAreaByNumber(4,E,F),setAreaByNumber(8,F,G),setAreaByNumber(11,G,H),allConditionsMet(H).
+test:-cpave1(A),lineRest1(X),colRest1(Y),setAreaByNumber(1,A,B),setAreaByNumber(7,B,C),setAreaByNumber(9,C,D),setAreaByNumber(3,D,E),setAreaByNumber(4,E,F),setAreaByNumber(8,F,G),setAreaByNumber(11,G,H),allConditionsMet(X,Y,H).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %getCoord(+X,+Y,+Board,-N)
-getCoord(X,Y,[_,_|Board],N):-
+getCoord(X,Y,Board,N):-
     nth0(Y,Board,Line),
     nth0(X,Line,N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %setAreaByNumber(+N,+Board,-NewBoard)
-setAreaByNumber(N,[RLines,RCols|Board],[RLines,RCols|NewBoard]):-
+setAreaByNumber(N,Board,NewBoard):-
     setArea_aux(Board,N,NewBoard).
 
 %setAreaAtCoord(+X,+Y,+Board,-NewBoard)
-setAreaAtCoord(X,Y,[RLines,RCols|Board],[RLines,RCols|NewBoard]):-
-    getCoord(X,Y,[_,_|Board],Item),
+setAreaAtCoord(X,Y,Board,NewBoard):-
+    getCoord(X,Y,Board,Item),
     setArea_aux(Board,Item,NewBoard).
 
 
@@ -47,7 +47,7 @@ max(N1,N,N):-
     N1 < N.
 
 %getBiggestN(+Board,-N)
-getBiggestN([_,_|Board],N):-
+getBiggestN(Board,N):-
     getBiggestN_aux(Board,N).
 
 getBiggestN_aux([],0).
@@ -66,7 +66,7 @@ getBiggestN_aux2(Line,N):-
 getShadedLine(Y,Board,N):-
     getShadedLine_aux(0,Y,Board,0,N).
 
-getShadedLine_aux(Size,_,[_,_|Board],N,N):-
+getShadedLine_aux(Size,_,Board,N,N):-
     nth0(0,Board,Line),
     length(Line,Size).
 
@@ -90,7 +90,7 @@ getShadedLine_aux(X,Y,Board,N1,N):-
 getShadedCol(X,Board,N):-
     getShadedCol_aux(X,0,Board,0,N).
 
-getShadedCol_aux(_,Size,[_,_|Board],N,N):-
+getShadedCol_aux(_,Size,Board,N,N):-
     nth0(0,Board,Line),
     length(Line,Size).
 
@@ -110,9 +110,9 @@ getShadedCol_aux(X,Y,Board,N1,N):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %allConditionsMet(+Board).
-allConditionsMet([Lines,Cols|Board]):-
-    allLinesMet(Lines,[Lines,Cols|Board]),
-    allColsMet(Cols,[Lines,Cols|Board]).
+allConditionsMet(Lines,Cols,Board):-
+    allLinesMet(Lines,Board),
+    allColsMet(Cols,Board).
 
 allLinesMet([],_).
 
@@ -134,12 +134,12 @@ shadeAllOnList([Elem|List],Board,NewBoard):-
     setAreaByNumber(Elem,Board,Board1),
     shadeAllOnList(List,Board1,NewBoard).
 
-solveGame(Board,Elems):-
+solveGame(Board,Lines,Cols,Elems):-
     getBiggestN(Board,N),
     SolLength #> 0,
     SolLength #=< N,
     length(Elems,SolLength),
     domain(Elems,1,N),
     shadeAllOnList(Elems,Board,NewBoard),
-    allConditionsMet(NewBoard).
+    allConditionsMet(Lines,Cols,NewBoard).
     
