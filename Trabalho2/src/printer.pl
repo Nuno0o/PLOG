@@ -15,6 +15,7 @@ printB(Board,Shaded):-
     shadeAllOnList(1,Shaded,Board,ShadedBoard),
     addWalls(ShadedBoard,WalledBoard).
 
+
 addWalls(ShadedBoard,WalledBoard):-
     addWallsCols(ShadedBoard,WalledBoard1),
     addWallsLines(WalledBoard1,WalledBoard).
@@ -49,3 +50,33 @@ createWallLine([Elem1|Rest1],[Elem2|Rest2],[0|Rest3]):-
 
 skipElem([],[],[],[],[],[]).
 skipElem([_|Rest1],[_|Rest2],[1|Rest3],Rest1,Rest2,Rest3).
+
+%printWalledBoard(+WalledBoard,+Shaded)
+printWalledBoard([WalledLine|Rest],Shaded):-
+    length(WalledLine,Size),!,
+    printBorderLine(Size),nl,
+    printWalledBoard_aux([WalledLine|Rest],Shaded),
+    printBorderLine(Size).
+
+printWalledBoard_aux([WalledLine|Rest],Shaded):-
+
+    printWalledLine(WalledLine,Shaded),
+    printWallLine(WalledLine),
+    printWalledBoard_aux(Rest,Shaded).
+
+
+
+
+
+printBorderLine(Size):-
+    write('-'),
+    Size1 is Size-1,
+    printBorderLine_aux(Size1).
+
+printBorderLine_aux(Size):-
+    write('---'),
+    Size1 is Size-1,
+    printBorderLine(Size1).
+
+
+    
