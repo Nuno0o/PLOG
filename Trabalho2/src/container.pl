@@ -1,6 +1,6 @@
 
 %[Restriçoes em linhas,Restriçoes em colunas,Board]
-cpave1(
+cpave(1,
     [[1,2,2,3,3,3,3],
      [1,1,2,4,4,3,5],
      [6,7,2,2,4,5,5],

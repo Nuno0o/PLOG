@@ -12,8 +12,8 @@ solvedPrint(Board,Solution):-
 
 %print(+Board,-Shaded)
 printB(Board,Shaded):-
-    shadeAllOnList(1,Shaded,Board,ShadedBoard),
-    addWalls(ShadedBoard,WalledBoard).
+    addWalls(Board,WalledBoard),
+    printWalledBoard(WalledBoard,Shaded).
 
 
 addWalls(ShadedBoard,WalledBoard):-
@@ -51,32 +51,77 @@ createWallLine([Elem1|Rest1],[Elem2|Rest2],[0|Rest3]):-
 skipElem([],[],[],[],[],[]).
 skipElem([_|Rest1],[_|Rest2],[1|Rest3],Rest1,Rest2,Rest3).
 
+
 %printWalledBoard(+WalledBoard,+Shaded)
-printWalledBoard([WalledLine|Rest],Shaded):-
-    length(WalledLine,Size),!,
-    printBorderLine(Size),nl,
-    printWalledBoard_aux([WalledLine|Rest],Shaded),
-    printBorderLine(Size).
+printWalledBoard([Line|Board],Shaded):-
+    length(Line,Size),
+    printBorderWall(Size),nl,
+    printWalledBoard_aux([Line|Board],Shaded),
+    printBorderWall(Size),nl.
 
-printWalledBoard_aux([WalledLine|Rest],Shaded):-
+printWalledBoard_aux([],_).
+printWalledBoard_aux([Line|Board],Shaded):-
+    write('|'),printWalledLine(Line,Shaded),write('|'),nl,
+    write('|'),printWalledLine(Line,Shaded),write('|'),nl,
+    write('|'),printWalledLine(Line,Shaded),write('|'),nl,
+    printWalledBoard_aux2(Board,Shaded).
 
-    printWalledLine(WalledLine,Shaded),
-    printWallLine(WalledLine),
-    printWalledBoard_aux(Rest,Shaded).
+printWalledBoard_aux2([],_).
+printWalledBoard_aux2([Line|Board],Shaded):-
+    printWall(Line),nl,
+    printWalledBoard_aux(Board,Shaded).
+
+printWalledLine([],_).
+
+printWalledLine([Elem|Rest],Shaded):-
+    nth1(Elem,Shaded,0),
+    write('   '),
+    printWalledLineWall(Rest,Shaded).
+
+printWalledLine([Elem|Rest],Shaded):-
+    nth1(Elem,Shaded,1),
+    write('XXX'),
+    printWalledLineWall(Rest,Shaded).
+
+
+printWalledLineWall([],_).
+
+printWalledLineWall([1|Rest],Shaded):-
+    write(' '),
+    printWalledLine(Rest,Shaded).
+
+printWalledLineWall([0|Rest],Shaded):-
+    write('|'),
+    printWalledLine(Rest,Shaded).
 
 
 
+printBorderWall(Size):-
+    length(Shaded,Size),
+    domain(Shaded,0,0),
+    labeling([],Shaded),
+    printWall(Shaded).
 
+printWall(Shaded):-
+    write('*'),
+    printWallAux(Shaded),
+    write('*').
 
-printBorderLine(Size):-
-    write('-'),
-    Size1 is Size-1,
-    printBorderLine_aux(Size1).
-
-printBorderLine_aux(Size):-
+printWallAux([]).
+printWallAux([0|Rest]):-
     write('---'),
-    Size1 is Size-1,
-    printBorderLine(Size1).
+    printWallAuxEdge(Rest).
+
+printWallAux([1|Rest]):-
+    write('   '),
+    printWallAuxEdge(Rest).
+
+printWallAuxEdge([]).
+printWallAuxEdge([_|Rest]):-
+    write('*'),
+    printWallAux(Rest).
+
+
 
 
     
