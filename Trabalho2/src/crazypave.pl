@@ -66,26 +66,25 @@ getBiggestN_aux2(Line,N):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %getShadedLine(+Y,+Board,-N)
-getShadedLine(Y,Board,N):-
-    getShadedLine_aux(0,Y,Board,0,N).
+getShadedLine(Y,[Line|Rest],N):-
+    Y #> 0,
+    Y1 #= Y-1,
+    getShadedLine(Y1,Rest,N).
 
-getShadedLine_aux(Size,_,Board,N,N):-
-    nth0(0,Board,Line),
-    length(Line,Size).
+getShadedLine(Y,[Line|Rest],N):-
+    Y #= 0,
+    getShadedLine_aux(Line,N).
 
+getShadedLine_aux([],0).
 
-getShadedLine_aux(X,Y,Board,N1,N):-
-    getCoord(X,Y,Board,Elem),
+getShadedLine_aux([Elem|Rest],N):-
     Elem #< 0,
-    N2 #= N1+1,
-    X1 #= X+1,
-    getShadedLine_aux(X1,Y,Board,N2,N).
+    N1 #= N-1,
+    getShadedLine_aux(Rest,N1).
 
-getShadedLine_aux(X,Y,Board,N1,N):-
-    getCoord(X,Y,Board,Elem),
+getShadedLine_aux([Elem|Rest],N):-
     Elem #> 0,
-    X1 #= X+1,
-    getShadedLine_aux(X1,Y,Board,N1,N).
+    getShadedLine_aux(Rest,N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -93,21 +92,21 @@ getShadedLine_aux(X,Y,Board,N1,N):-
 getShadedCol(X,Board,N):-
     getShadedCol_aux(X,0,Board,0,N).
 
-getShadedCol_aux(_,Size,Board,N,N):-
+getShadedCol_aux(_,Size,Board,0):-
     nth0(0,Board,Line),
     length(Line,Size).
 
-getShadedCol_aux(X,Y,Board,N1,N):-
+getShadedCol_aux(X,Y,Board,N):-
     getCoord(X,Y,Board,Elem),
     Elem #< 0,
-    N2 #= N1+1,
+    N1 #= N-1,
     Y1 #= Y+1,
-    getShadedCol_aux(X,Y1,Board,N2,N).
+    getShadedCol_aux(X,Y1,Board,N1).
 
-getShadedCol_aux(X,Y,Board,N1,N):-
+getShadedCol_aux(X,Y,Board,N):-
     getCoord(X,Y,Board,Elem),
     Elem #> 0,
     Y1 #= Y+1,
-    getShadedCol_aux(X,Y1,Board,N1,N).
+    getShadedCol_aux(X,Y1,Board,N).
 
     
