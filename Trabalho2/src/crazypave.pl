@@ -90,7 +90,7 @@ getShadedLine_aux([Elem|Rest],N):-
 
 %getShadedCol(+X,+Board,-N)
 getShadedCol(X,Board,N):-
-    getShadedCol_aux(X,0,Board,0,N).
+    getShadedCol_aux(X,0,Board,N).
 
 getShadedCol_aux(_,Size,Board,0):-
     nth0(0,Board,Line),
