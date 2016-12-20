@@ -1,7 +1,6 @@
 %normalPrint(+Board)
 normalPrint(Board):-
-    nth0(0,Board,Line),
-    length(Line,Size),
+    getBiggestN(Board,Size),
     length(Selected,Size),
     domain(Selected,0,0),
     printB(Board,Selected).
