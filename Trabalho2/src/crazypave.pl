@@ -1,8 +1,8 @@
+:- use_module(library(lists)).
+:- use_module(library(clpfd)).
 :- include('container.pl').
 :- include('solver.pl').
 :- include('printer.pl').
-:- use_module(library(lists)).
-:- use_module(library(clpfd)).
 
 
 test:-cpave1(A),lineRest1(X),colRest1(Y),setAreaByNumber(1,A,B),setAreaByNumber(7,B,C),setAreaByNumber(9,C,D),setAreaByNumber(3,D,E),setAreaByNumber(4,E,F),setAreaByNumber(8,F,G),setAreaByNumber(11,G,H),allConditionsMet(X,Y,H).
@@ -66,47 +66,32 @@ getBiggestN_aux2(Line,N):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %getShadedLine(+Y,+Board,-N)
-getShadedLine(Y,[Line|Rest],N):-
-    Y #> 0,
-    Y1 #= Y-1,
-    getShadedLine(Y1,Rest,N).
+getShadedLine(Y,Board,N):-
+    getShadedLine_aux(0,Y,Board,N).
 
-getShadedLine(Y,[Line|Rest],N):-
-    Y #= 0,
-    getShadedLine_aux(Line,N).
+getShadedLine_aux(Size,_,[Line|_],0):-
+    length(Line,Size).
 
-getShadedLine_aux([],0).
-
-getShadedLine_aux([Elem|Rest],N):-
-    Elem #< 0,
-    N1 #= N-1,
-    getShadedLine_aux(Rest,N1).
-
-getShadedLine_aux([Elem|Rest],N):-
-    Elem #> 0,
-    getShadedLine_aux(Rest,N).
-
+getShadedLine_aux(X,Y,Board,N):-
+    getCoord(X,Y,Board,Elem),
+    Elem #< 0 #<=> B,
+    N1 #= N-B,
+    X1 #= X+1,
+    getShadedLine_aux(X1,Y,Board,N1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %getShadedCol(+X,+Board,-N)
 getShadedCol(X,Board,N):-
     getShadedCol_aux(X,0,Board,N).
 
-getShadedCol_aux(_,Size,Board,0):-
-    nth0(0,Board,Line),
+getShadedCol_aux(_,Size,[Line|_],0):-
     length(Line,Size).
 
 getShadedCol_aux(X,Y,Board,N):-
     getCoord(X,Y,Board,Elem),
-    Elem #< 0,
-    N1 #= N-1,
+    Elem #< 0 #<=> B,
+    N1 #= N-B,
     Y1 #= Y+1,
     getShadedCol_aux(X,Y1,Board,N1).
-
-getShadedCol_aux(X,Y,Board,N):-
-    getCoord(X,Y,Board,Elem),
-    Elem #> 0,
-    Y1 #= Y+1,
-    getShadedCol_aux(X,Y1,Board,N).
 
     
