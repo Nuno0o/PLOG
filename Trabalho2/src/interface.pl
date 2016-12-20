@@ -1,71 +1,41 @@
-getChar(Input):-
-get_char(Input),
-get_char(_).
-
-getInt(Input):-
-getChar(Input1),
-char_code(Input1,Code),
-Input is Code - 48.
-
 chooseBoard(B):-
 cpave(A,_),
 \+ (
 cpave(B,_),
 B > A
 ),
-format('Board to solve [1..~c]: ',[A]),
+format('Board to solve [1..~d]: ',[A]),
 repeat,
-getInt(N),
+%getInt(N),
+read(N),
 N > 0,
-N < A + 1,
+N =< A,
 cpave(N,B).
+
+chooseRestAux(Z,[X|Y]):-
+read(N),!,
+(N > -1, N < Z) -> (X = N, chooseRestAux(Z,Y));
+N \= -1 -> chooseRestAux(Z,[X|Y]);
+N = -1.
 
 chooseColRest(B,ColRest):-
 length(B,H),
 nth0(0,B,L),
 length(L,W),
-length(ColRest,0),
-format('Column restictions [0..~c] (-1 to continue):\n',[W]),
-repeat,
-ColRestTmp = ColRest,
-write(ColRestTmp),nl,
-getInt(N),
-(
-N > -1,
-N < W
-) ->
-append(ColRestTemp,[N],ColRest),
-(
-(N =\= -1) -> fail;
-true
-).
+format('Column restictions [0..~d] (-1 to continue):\n',[W]),!,
+chooseRestAux(W,ColRest).
+
 chooseLineRest(B,LineRest):-
 length(B,H),
-length(LineRest,0),
-format('Line restictions [0..~c] (-1 to continue):\n',[H]),
-repeat,
-LineRestTmp = LineRest,
-write(LineRestTmp),nl,
-getInt(N),
-(
-N > -1,
-N < W
-) ->
-append(LineRestTemp,[N],LineRest),
-(
-N = -1;
-fail
-).
-
+format('Line restictions [0..~d] (-1 to continue):\n',[H]),!,
+chooseRestAux(H,LineRest).
 
 interface:-
 chooseBoard(B),
-%normalPrint(B),
+%normalPrint(B),nl,
+chooseLineRest(B,ListRest),
 chooseColRest(B,ColRest),
-chooseLineRest(N,ListRest),
-solveGame(B,lineRest,colRest,Sol),
+solveGame(B,LineRest,ColRest,Sol),
 printB(B,Sol),
+get_char(_),
 interface.
-
-
-

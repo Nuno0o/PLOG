@@ -1,4 +1,4 @@
-
+﻿
 %[Restriçoes em linhas,Restriçoes em colunas,Board]
 cpave(1,
     [[1,2,2,3,3,3,3],
