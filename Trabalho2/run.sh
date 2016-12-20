@@ -1,0 +1,1 @@
+sicstus -f -i -l src/crazypave.pl --goal crazypave.
