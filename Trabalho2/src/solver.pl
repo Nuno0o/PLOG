@@ -2,9 +2,11 @@ solveGame(Board,Lines,Cols,Elems):-
     getBiggestN(Board,N),
     length(Elems,N),
     domain(Elems,0,1),
-    allConditionsMet(Lines,Cols,Board,Elems),
+    allConditionsMet(Lines,Cols,Board,Elems),nl,
     statistics(walltime,_),
     labeling([],Elems),
+    statistics(walltime, [_, Time | _]),
+    format('Time: ~4d seconds', Time), nl,
     fd_statistics.
 
 %allConditionsMet(+Board).
