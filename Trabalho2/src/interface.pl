@@ -30,13 +30,13 @@ N \= -1 -> chooseRestAux2(Z,[X|Y]);
 N = -1.
 
 
-chooseRestAux2(Z,[X|Y]):-
+chooseRestAux2(Z,[X|Y]):- 
 write('Restriction: '),
 %read(N),
 getInt(N),!,
 (N > -1, N < Z) -> (X = N, chooseRestAux1(Z,Y));
-N \= -1 -> chooseRestAux1(Z,[X|Y]);
-N = -1.
+N \= -1 -> (X = 0, chooseRestAux1(Z,Y));
+N = -1 -> X = 0.
 
 chooseColRest(B,ColRest):-
 length(B,H),
@@ -52,10 +52,11 @@ chooseRestAux1(H,LineRest).
 
 interface:-
 chooseBoard(B),
-%normalPrint(B),nl,
+normalPrint(B),nl,
 chooseLineRest(B,ListRest),
+get_char(_),
 chooseColRest(B,ColRest),
 solveGame(B,LineRest,ColRest,Sol),
-printB(B,Sol),
+printB(B,Sol),nl,
 get_char(_),
 interface.
