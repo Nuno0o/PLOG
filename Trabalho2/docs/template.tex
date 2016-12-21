@@ -14,7 +14,7 @@
 \setlength{\textwidth}{16cm}
 \setlength{\textheight}{22cm}
 
-\title{\Huge\textbf{Crazy Pavement}\linebreak\linebreak\linebreak
+\title{\Huge\textbf{Ploy}\linebreak\linebreak\linebreak
 \Large\textbf{Relatório Final}\linebreak\linebreak
 \linebreak\linebreak
 \includegraphics[scale=0.1]{feup-logo.png}\linebreak\linebreak
@@ -23,10 +23,10 @@
 \Large{Programação em Lógica}\linebreak
 }
 
-\author{\textbf{Grupo Crazy Pavement\_5:}\\ Gonçalo Ribeiro - 201403877 \\ Nuno Martins - 201405079 \\\linebreak\linebreak \\
+\author{\textbf{Grupo CrazyPavement\_5:}\\ Gonçalo Ribeiro - 201403877 \\ Nuno Martins - 201405079 \\\linebreak\linebreak \\
  \\ Faculdade de Engenharia da Universidade do Porto \\ Rua Roberto Frias, s\/n, 4200-465 Porto, Portugal \linebreak\linebreak\linebreak
 \linebreak\linebreak\vspace{1cm}}
-\date{13 de Novembro de 2016}
+\date{22 de Dezembro de 2016}
 \maketitle
 \thispagestyle{empty}
 
@@ -36,12 +36,7 @@
 \newpage
 
 \section*{Resumo}
-Para o 2º Trabalho Prático, o nosso grupo implementou uma solução para o puzzle Crazy Pavement em Prolog, uma linguagem de programação em lógica, usando restrições para encontrar uma solução.
-O principal objectivo deste trabalho foi aplicar os conhecimentos adquiridos sobre o paradigma de programação em lógica, lecionados na unidade curricular PLOG.
-
-O resultado final é um versão funcional do jogo com interface de texto. Foi também implementada um inteligência artificial capaz de fazer jogadas aleatórias ou gananciosas.
-
-Como considerações finais, estamos satisfeitos com o trabalho que realizámos e concordamos que foi uma experiência enriquecedora e que de certa forma colocou à prova os nossos conhecimentos de lógica e a nossa capacidade de aprender um novo paradigma de programação num espaço de tempo relativamente pequeno.
+Para o 2º Trabalho Prático, o nosso grupo implementou o puzzle "crazy pavement" em Prolog. O puzzle consiste em pintar grupos de células adjacentes em matrizes quadradas de forma a cumprir restrições arbitrárias, impostas sobre o número de células pintadas por linha ou por coluna. Foram empregues restrições lógicas ao nível do código. O resultado final é um gerador de soluções funcional, com interface de texto.
 
 %Resumo sucinto do trabalho com 150 a 250 palavras (problema abordado, objetivo, como foi o problema resolvido/abordado, principais resultados e conclusões).
 
@@ -59,10 +54,11 @@ Como considerações finais, estamos satisfeitos com o trabalho que realizámos 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introdução}
-No âmbito da unidade curricular de Programação em Lógica, foi-nos proposto para o primeiro trabalho prático a elaboração de um jogo de tabuleiro com a línguagem Prolog. O jogo foi selecionado de uma lista de jogos sedida pelos docentes. A escolha do Ploy como objecto do nosso trabalho residiu no interesse mútuo que temos por jogos da família do xadrez.
+No âmbito da unidade curricular de Programação em Lógica, foi-nos proposto para o segundo trabalho prático a elaboração de um puzzle em Prolog, recorrendo ao uso de restrições lógicas.
 
-O objetivo deste trabalho foi pôr em prática os conhecimentos adquiridos sobre programação em lógica. Programação em lógica é um paradigma de programação baseado em lógica formal. Um programa escrito neste paragima é um conjunto de premissas e expressões em forma lógica, que expressam factos e regras sobre o dominio do problema. A línguagem Polog é uma das linguagens de programação lógica, desenvolvida por Alain Colmerauer - cientista de computação francês - em 1972.
+O objetivo deste trabalho foi pôr em prática os conhecimentos adquiridos sobre programação em lógica com restrições. Uma restrição lógica é uma limitação ao domínio de uma variàvel lógica. A linguagem Prolog pertence à classe de linguagens CLP - Contraint Logic Programming. Esta classe de linguagens combina a declaratividade da programação em lógica com a eficiência da resolução de restrições, substituindo o método de pesquisa predefinido da programação em lógica - "generate and test" - por "constrain and generate".
 
+A problemática central do nosso trabalho reside na tradução das regras de um puzzle em restrições lógicas. Isto passa pela escolha de uma estrutura viável para a representação de soluções, e adaptar as regras linguísticas do puzzle em restrições do domínio lógico desta estrutura.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{O Jogo Ploy}
@@ -232,13 +228,11 @@ A opção 'How to play' imprime as instruções do jogo no ecrã e remete novame
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusões}
-Como considerações finais, estamos satisfeitos com o trabalho que realizámos e concordamos que foi uma experiência enriquecedora e que de certa forma colocou à prova os nossos conhecimentos de lógica e a nossa capacidade de aprender um novo paradigma de programação num espaço de tempo curto.
+Como considerações finais, estamos satisfeitos com o trabalho que realizámos e concordamos que foi uma experiência enriquecedora e que de certa forma colocou à prova os nossos conhecimentos de lógica.
 
-Não nos deparamos com nenhuma dificuldade concreta durante a implementação do jogo. No entanto, esta foi relativamente lenta e laborosa, visto que estavamos activamente a aprender Polog enquanto faziamos o projecto, o que implicou uma constante consulta de documentação e uma abordagem "trial by error" de programação.
+De momento, todos os puzzles são hardcoded. Reconhecemos que a implementação de uma funcionalidade que permitisse ao utilizador ler puzzles a partir de ficheiros sería uma melhoria conveniente, assim como a adição de um menu "how to play" para orientar novos utilizadores ao funcionamento do programa.
 
-Ambos concordamos que deviamos ter começado a elaboração do relatório mais cedo, em vez de o deixarmos para ultima prioridade. Assim teríamos mais tempo para adicionar mais conteúdo e refinar o restante. Tirando isso, sentimos que conseguimos fazer tudo ao que nos propomos no início do desenvolvimento.
-
-Em suma, reconhecemos o potencial do Prolog como ferramenta para o ensino didatico de lógica, mas, na prespectiva de quem usa maioritariamente linguagens imperativas (C, C++, Java), é pouco funcional - não nos dá ferramentas suficientes para atacarmos diretamente um problema, é necessário criar múltiplos predicados para relizar coisas tão simples como iterar listas.
+Visto que o cerne do nosso código - o predicado que gera soluções do puzzle - foi desenvolvido numa única aula prática, reconhecemos o poder da programação com restrições lógicas na resolução deste tipo de problemas combinatórios. É de nossa opinião que a mesma implementação num paradigma de linguagem imperativo (C, Java, etc.) resultaria num tempo desenvolvimento maior e num código mais extenso e complexo.
 
 %Que conclui deste projecto? Como poderia melhorar o trabalho desenvolvido?
 \end{document}
