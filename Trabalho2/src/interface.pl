@@ -1,11 +1,10 @@
 getChar(Input):-
-	get_char(Input),
+	read(Input),
 	get_char(_).
 
 getInt(Input):-
-	getChar(Input1),
-	char_code(Input1,Code),
-	Input is Code - 48.
+	read(Input),
+	get_char(_).
 
 chooseBoard(B):-
 	cpave(A,_),
@@ -21,42 +20,46 @@ chooseBoard(B):-
 	N =< A,
 	cpave(N,B).
 
-chooseRestAux1(Z,[X|Y]):-
-write('Index: '),
-%read(N),
-getInt(N),!,
-(N > -1, N < Z) -> (X = N, chooseRestAux2(Z,Y));
-N \= -1 -> chooseRestAux2(Z,[X|Y]);
-N = -1.
+chooseRestAux1(Z,Rest):-
+	write('Index: '),
+	getInt(N),
+	checkNumber1(Z,N,Rest).
 
+checkNumber1(Z,N,[N|Y]):-
+	N > -1,N < Z,
+	chooseRestAux2(Z,Y).
 
-chooseRestAux2(Z,[X|Y]):- 
-write('Restriction: '),
-%read(N),
-getInt(N),!,
-(N > -1, N < Z) -> (X = N, chooseRestAux1(Z,Y));
-N \= -1 -> (X = 0, chooseRestAux1(Z,Y));
-N = -1 -> X = 0.
+checkNumber1(Z,N,[]).
+
+chooseRestAux2(Z,Rest):- 
+	write('Restriction: '),
+	getInt(N),
+	checkNumber2(Z,N,Rest).
+
+checkNumber2(Z,N,[N|Y]):-
+	N > -1,N < Z,
+	chooseRestAux1(Z,Y).
+
+checkNumber2(Z,N,[]).
 
 chooseColRest(B,ColRest):-
-length(B,H),
-nth0(0,B,L),
-length(L,W),
-format('Column restictions [0..~d] (-1 to continue):\n',[W]),!,
-chooseRestAux1(W,ColRest).
+	length(B,H),
+	nth0(0,B,L),
+	length(L,W),
+	format('Column restictions [0..~d] (-1 to continue):\n',[W]),
+	chooseRestAux1(W,ColRest).
 
 chooseLineRest(B,LineRest):-
-length(B,H),
-format('Line restictions [0..~d] (-1 to continue):\n',[H]),!,
-chooseRestAux1(H,LineRest).
+	length(B,H),
+	format('Line restictions [0..~d] (-1 to continue):\n',[H]),
+	chooseRestAux1(H,LineRest).
 
 interface:-
-chooseBoard(B),
-normalPrint(B),nl,
-chooseLineRest(B,LineRest),
-get_char(_),
-chooseColRest(B,ColRest),
-solveGame(B,LineRest,ColRest,Sol),
-printB(B,Sol),nl,
-get_char(_),
-interface.
+	chooseBoard(B),
+	normalPrint(B),nl,
+	chooseLineRest(B,LineRest),
+	chooseColRest(B,ColRest),!,
+	write(LineRest),write(ColRest),
+	solveGame(B,LineRest,ColRest,Sol),
+	printB(B,Sol),nl,
+	interface.
