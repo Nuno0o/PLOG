@@ -3,6 +3,7 @@ normalPrint(Board):-
     getBiggestN(Board,Size),
     length(Selected,Size),
     domain(Selected,0,0),
+    labeling([],Selected),
     printB(Board,Selected).
 
 solvedPrint(Board,Solution):-
