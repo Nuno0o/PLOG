@@ -8,18 +8,18 @@ getInt(Input):-
 	Input is Code - 48.
 
 chooseBoard(B):-
-cpave(A,_),
-\+ (
-cpave(B,_),
-B > A
-),
-format('Board to solve [1..~d]: ',[A]),
-repeat,
-getInt(N),
-%read(N),
-N > 0,
-N =< A,
-cpave(N,B).
+	cpave(A,_),
+	\+ (
+	cpave(B,_),
+	B > A
+	),
+	format('Board to solve [1..~d]: ',[A]),
+	repeat,
+	getInt(N),
+	%read(N),
+	N > 0,
+	N =< A,
+	cpave(N,B).
 
 chooseRestAux1(Z,[X|Y]):-
 write('Index: '),
@@ -53,7 +53,7 @@ chooseRestAux1(H,LineRest).
 interface:-
 chooseBoard(B),
 normalPrint(B),nl,
-chooseLineRest(B,ListRest),
+chooseLineRest(B,LineRest),
 get_char(_),
 chooseColRest(B,ColRest),
 solveGame(B,LineRest,ColRest,Sol),
