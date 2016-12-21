@@ -29,7 +29,7 @@ checkNumber1(Z,N,[N|Y]):-
 	N > -1,N < Z,
 	chooseRestAux2(Z,Y).
 
-checkNumber1(Z,N,[]).
+checkNumber1(_,_,[]).
 
 chooseRestAux2(Z,Rest):- 
 	write('Restriction: '),
@@ -40,10 +40,9 @@ checkNumber2(Z,N,[N|Y]):-
 	N > -1,N < Z,
 	chooseRestAux1(Z,Y).
 
-checkNumber2(Z,N,[]).
+checkNumber2(_,_,[]).
 
 chooseColRest(B,ColRest):-
-	length(B,H),
 	nth0(0,B,L),
 	length(L,W),
 	format('Column restictions [0..~d] (-1 to continue):\n',[W]),
@@ -60,6 +59,5 @@ interface:-
 	chooseLineRest(B,LineRest),
 	chooseColRest(B,ColRest),!,
 	nl,
-	solveGame(B,LineRest,ColRest,Sol),
-	printB(B,Sol),nl,
+	(solveGame(B,LineRest,ColRest,Sol)->(printB(B,Sol),nl);(write('No solution found'),nl)),
 	interface.
