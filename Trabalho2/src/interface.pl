@@ -59,7 +59,7 @@ interface:-
 	normalPrint(B),nl,
 	chooseLineRest(B,LineRest),
 	chooseColRest(B,ColRest),!,
-	write(LineRest),write(ColRest),
+	nl,
 	solveGame(B,LineRest,ColRest,Sol),
 	printB(B,Sol),nl,
 	interface.
