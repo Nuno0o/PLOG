@@ -9,17 +9,19 @@ solveGame(Board,Lines,Cols,Elems):-
     format('Time: ~4d seconds', Time), nl,
     fd_statistics.
 
-%allConditionsMet(+Board).
+%allConditionsMet(+Lines,+Cols,+Board,-Solution).
 allConditionsMet(Lines,Cols,Board,Elems):-
     allLinesMet(Lines,Board,Elems),
     allColsMet(Cols,Board,Elems).
 
+%allLinesMet(+Lines,+Board,-Solution)
 allLinesMet([],_,_).
 
 allLinesMet([Line,N|Rest],Board,Elems):-
     getShadedLine(Line,Board,N,Elems),
     allLinesMet(Rest,Board,Elems).
 
+%allColsMet(+Cols,+Board,-Solution)
 allColsMet([],_,_).
 
 allColsMet([Col,N|Rest],Board,Elems):-

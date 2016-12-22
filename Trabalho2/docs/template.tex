@@ -36,7 +36,7 @@
 \newpage
 
 \section*{Resumo}
-Para o 2º Trabalho Prático, o nosso grupo implementou o puzzle "crazy pavement" em Prolog. O puzzle consiste em pintar grupos de células adjacentes em matrizes quadradas de forma a cumprir restrições arbitrárias, impostas sobre o número de células pintadas por linha ou por coluna. Foram empregues restrições lógicas ao nível do código. O resultado final é um gerador de soluções funcional, com interface de texto.
+Para o 2º Trabalho Prático, o nosso grupo implementou uma resolução do puzzle "Crazy Pavement" em Prolog. 
 
 %Resumo sucinto do trabalho com 150 a 250 palavras (problema abordado, objetivo, como foi o problema resolvido/abordado, principais resultados e conclusões).
 
@@ -61,30 +61,11 @@ O objetivo deste trabalho foi pôr em prática os conhecimentos adquiridos sobre
 A problemática central do nosso trabalho reside na tradução das regras de um puzzle em restrições lógicas. Isto passa pela escolha de uma estrutura viável para a representação de soluções, e adaptar as regras linguísticas do puzzle em restrições do domínio lógico desta estrutura.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{O Jogo Ploy}
-Ploy é um jogo de tabuleiro para 2 ou 4 jogadores. Neste trabalho apenas nos focámos na versão de 2 jogadores.
+\section{O Puzzle Crazy Pavement}
+Crazy pavement é um puzzle realizado num tabuleiro quadriculado, com largura e comprimento iguais, dividido em várias regiões.
 
-Lançado em 1970 pela a empresa Minnesota Mining and Manufacturing, o jogo consiste num tabuleiro 9 por 9 onde cada jogador tem um conjunto de 15 peças.
-O objetivo do jogo é capturar o Commander adversário (semelhante ao Rei no xadrez) ou então todas as peças menos o Commander. A captura de peças efectua-se da mesma maneira que no xadrez - movendo-se um peça para uma casa ocupada por uma peça adversária.
-
-Em cada turno, o jogador pode escolher uma peça para jogar. Uma jogada consiste em rodar a peça escolhida (45º para qualquer sentido) ou então mover a peça numa das direções para qual ela aponta. O número de casas a mover é determinado pelo tipo de peça.
-
-Cada conjunto de peças contem:
-
-\begin{table}[ht]
-\centering
-%\label{Conjunto de peças de cada jogador.}
-\begin{tabular}[ht]{|c|c|c|c|c|}
-  \hline
-Propriedades \textbackslash \space Peças&Shields(*)&Probes&Lances&Commander\\
-\hline
-Quantidade&3&5&6&1\\
-Casas a mover&1&2&3&1\\
-Direções apontadas&1&2&3&4\\
-\hline
-\end{tabular}
-\caption{(*) Os Shields são as únicas peças que podem ser rodadas e movidas na mesma jogada.}
-\end{table}
+O objetivo do puzzle consiste em sombrear estas regiões de forma a cumprir restrições arbitrárias, impostas sobre o número de células sombreadas por linha ou por coluna. 
+Foram empregues restrições lógicas ao nível do código. O resultado final é um gerador de soluções funcional, com interface de texto.
 
 \begin{figure}[ht]
 \caption{Estado inicial do jogo.}
