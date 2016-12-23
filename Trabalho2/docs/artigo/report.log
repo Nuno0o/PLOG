@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.16)  23 DEC 2016 17:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.16)  23 DEC 2016 17:36
 entering extended mode
 **./report.tex
 (report.tex
@@ -589,25 +589,28 @@ File: exemplo1.png Graphic file (type png)
  <use exemplo1.png>
 Package pdftex.def Info: exemplo1.png used on input line 85.
 (pdftex.def)             Requested size: 211.24695pt x 91.04872pt.
- [2 <./exemplo1.png>]
-Overfull \hbox (1.81313pt too wide) in paragraph at lines 94--95
+
+Overfull \hbox (1.81313pt too wide) in paragraph at lines 92--93
 \OT1/cmr/m/n/12 Para rep-re-sen-tar o tab-uleiro do jogo, foi us-ada uma es-tru
 -tura generica
  []
 
-<exemplo2.png, id=14, 441.90094pt x 190.46156pt>
+[2] <exemplo2.png, id=14, 441.90094pt x 190.46156pt>
 File: exemplo2.png Graphic file (type png)
  <use exemplo2.png>
-Package pdftex.def Info: exemplo2.png used on input line 100.
+Package pdftex.def Info: exemplo2.png used on input line 98.
 (pdftex.def)             Requested size: 211.24695pt x 91.04872pt.
 
 <exemplo3.png, id=15, 441.90094pt x 190.46156pt>
 File: exemplo3.png Graphic file (type png)
  <use exemplo3.png>
-Package pdftex.def Info: exemplo3.png used on input line 112.
+Package pdftex.def Info: exemplo3.png used on input line 110.
 (pdftex.def)             Requested size: 211.24695pt x 91.04872pt.
- [3 <./exemplo2.png>]
-Overfull \hbox (5.39952pt too wide) in paragraph at lines 123--124
+
+Underfull \vbox (badness 4217) has occurred while \output is active []
+
+ [3 <./exemplo1.png> <./exemplo2.png>]
+Overfull \hbox (5.39952pt too wide) in paragraph at lines 120--121
 []\OT1/cmr/m/n/12 Estas s~ao im-postas pe-los pred-i-ca-dos \OT1/cmr/m/it/12 al
 lLinesMet(+Lines,+Board,-
  []
@@ -615,7 +618,7 @@ lLinesMet(+Lines,+Board,-
 <exemplo4.png, id=20, 185.94469pt x 350.81062pt>
 File: exemplo4.png Graphic file (type png)
  <use exemplo4.png>
-Package pdftex.def Info: exemplo4.png used on input line 142.
+Package pdftex.def Info: exemplo4.png used on input line 139.
 (pdftex.def)             Requested size: 128.04092pt x 184.94914pt.
  [4 <./exemplo3.png>] [5 <./exemplo4.png>] [6] (report.aux)
 
@@ -637,7 +640,7 @@ es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX
 /type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
 lic/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
 ts/cm/cmti12.pfb>
-Output written on report.pdf (6 pages, 129635 bytes).
+Output written on report.pdf (6 pages, 129463 bytes).
 PDF statistics:
  55 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
