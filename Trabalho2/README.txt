@@ -1,3 +1,5 @@
 How to run:
 -----------
-Open SICStus and type:
+>Open SICStus
+>Consult crazypave.pl
+>write crazypave.
